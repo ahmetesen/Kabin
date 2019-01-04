@@ -6,16 +6,15 @@ import { EmailScreen, PasswordScreen } from './screens/auth/login';
 import ErrorManager from './core/ErrorManager';
 import LandingScreen from './screens/LandingScreen';
 
+const pagesThatInDevelopment = "Name"
 class App extends React.Component {
 
     constructor(props){
-        console.log("entering app constructor");
         super(props);
         this._handleFinishLoading = this._handleFinishLoading.bind(this);
     }
 
     render(){
-        console.log("entering app render");
         return(
             <AppLoading
                 startAsync={this._loadResourcesAsync}
@@ -31,7 +30,7 @@ class App extends React.Component {
   
     _handleFinishLoading = () => {
         console.log("app loading finished");
-        this.props.navigation.navigate('Landing');
+        this.props.navigation.navigate(pagesThatInDevelopment);
     };
   
     _loadResourcesAsync = async () => {
@@ -50,10 +49,22 @@ class App extends React.Component {
     };
 }
 
-const CreateUserStack = createStackNavigator({Name: NameScreen, Email:CreateEmailScreen, CreatePassword: CreatePasswordScreen, Activation: ActivationScreen});
+const CreateUserStack = createStackNavigator(
+    {
+        Name: NameScreen, 
+        Email:CreateEmailScreen, 
+        CreatePassword: 
+        CreatePasswordScreen, 
+        Activation: ActivationScreen
+    },
+    {
+        headerMode:'none'
+    }
+);
 const LoginStack = createStackNavigator({Email: EmailScreen, Password: PasswordScreen});
 const AppNavigator = createSwitchNavigator({
         App:App,
+        Name:NameScreen,
         Landing: LandingScreen,
         Login:LoginStack,
         CreateUser: CreateUserStack

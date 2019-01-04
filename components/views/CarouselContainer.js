@@ -63,7 +63,6 @@ export default class CarouselContainer extends React.Component{
     }
 }
 const vWidth = Dimensions.get('window').width;
-console.log("width"+vWidth);
 const styles = StyleSheet.create({
     container: {
         flex:1,

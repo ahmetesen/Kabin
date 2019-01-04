@@ -3,11 +3,21 @@ import PrimaryButton from '../components/buttons/PrimaryButton';
 import SecondaryButton from '../components/buttons/SecondaryButton';
 import TextBlock from '../components/texts/TextBlock';
 import CarouselContainer from '../components/views/CarouselContainer' ;
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import GradientContainer from '../components/views/GradientContainer';
 export default class LandingScreen extends React.Component{
     constructor(props){
         super(props);
+        this._secondaryPress = this._secondaryPress.bind(this);
+        this._primaryPress = this._primaryPress.bind(this);
+    }
+
+    _primaryPress(event){
+        this.props.navigation.navigate('CreateUser');
+    }
+
+    _secondaryPress(event){
+        console.log("secondary pressed");
     }
 
     render(){
@@ -21,8 +31,8 @@ export default class LandingScreen extends React.Component{
                         <CarouselContainer entries={entries} />
                     </View>
                     <View style={styles.buttonContainer}>
-                        <PrimaryButton title="Hadi Başlayalım"></PrimaryButton>
-                        <SecondaryButton title="Giriş Yap"></SecondaryButton>
+                        <PrimaryButton onPress={this._primaryPress} title="Hadi Başlayalım"></PrimaryButton>
+                        <SecondaryButton onPress={this._secondaryPress} title="Giriş Yap"></SecondaryButton>
                     </View>
                 </View>
             </GradientContainer>

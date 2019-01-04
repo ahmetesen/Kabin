@@ -5,11 +5,17 @@ import {Button} from 'react-native-elements';
 export default class SecondaryButton extends React.Component{
     constructor(props){
         super(props);
+        this._onPress = this._onPress.bind(this);
+    }
+
+    _onPress(event){
+        if(this.props.onPress)
+            this.props.onPress(event);
     }
 
     render(){
         return(
-            <Button title={this.props.title} titleStyle={styles.title} props={this.props} buttonStyle={styles.button}>
+            <Button onPress={this._onPress} title={this.props.title} titleStyle={styles.title} props={this.props} buttonStyle={styles.button}>
                 {this.props.children}
             </Button>
         )

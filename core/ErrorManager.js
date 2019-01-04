@@ -2,6 +2,7 @@ export default class ErrorManager{
     _instance = new ErrorManager();
     constructor(){
         if(!_instance){
+            this.version=0;
             _instance = this;
         }
         else
@@ -14,7 +15,10 @@ export default class ErrorManager{
         return _instance;
     }
 
-    logErrors(error){
+    logErrors(errorKey,error){
         throw new Error("logErrors method is not inplemented yet. The error that sent this method is:"+error);
+    }
+    sendErrors(){
+        
     }
 }
