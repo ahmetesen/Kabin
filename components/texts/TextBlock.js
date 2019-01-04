@@ -1,0 +1,63 @@
+import React from 'react';
+import {StyleSheet, Text} from 'react-native';
+export default class TextBlock extends React.Component{
+    constructor(props){
+        super(props);
+    }
+
+    render(){
+        style=[styles.text];
+        if(this.props.logo)
+            style.push(styles.logo);
+        if(this.props.big)
+            style.push(styles.big);
+        if(this.props.dark)
+            style.push(styles.dark);
+        if(this.props.blue)
+            style.push(styles.blue);
+        if(this.props.bold)
+            style.push(styles.bold);
+        if(this.props.low)
+            style.push(styles.low);
+        if(this.props.italic)
+            style.push(styles.italic);
+        return(
+            <Text style={style}>
+                {this.props.children}
+            </Text>
+        );
+    }
+}
+const styles = StyleSheet.create({
+
+    dark: {
+        color: '#1D1D1D'
+    },
+    blue: {
+        color: '#283ad8'
+    },
+    text:{
+        fontFamily: 'nunito-light',
+        fontSize: 18,
+        color: '#F9F9F9'
+    },
+    bold:{
+        fontFamily: 'nunito-semibold'
+    },
+    low:{
+        fontFamily: 'nunito-semibold',
+        fontSize:14,
+        color: '#878787'
+    },
+    big:{
+        fontSize:24
+    },
+    italic:{
+        fontFamily: 'nunito-lightitalic'
+    },
+    logo:{
+        fontFamily: 'nunito-black',
+        fontSize:40,
+        color:'white'
+    }
+});
