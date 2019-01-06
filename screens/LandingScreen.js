@@ -13,11 +13,15 @@ export default class LandingScreen extends React.Component{
     }
 
     _primaryPress(event){
-        this.props.navigation.navigate('CreateUser');
+        this.props.navigation.navigate('Name');
     }
 
     _secondaryPress(event){
-        this.props.navigation.navigate('Login');
+        this.props.navigation.navigate('Email');
+    }
+
+    componentDidMount(){
+        console.log(this.props.navigation);
     }
 
     render(){

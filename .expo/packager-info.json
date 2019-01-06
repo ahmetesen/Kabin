@@ -1,9 +1,9 @@
 {
   "devToolsPort": 19002,
   "expoServerPort": 19000,
-  "packagerPort": 19003,
-  "packagerPid": 41469,
+  "packagerPort": 19001,
+  "packagerPid": 2406,
   "expoServerNgrokUrl": "https://si-z9g.anonymous.app.exp.direct",
   "packagerNgrokUrl": "https://packager.si-z9g.anonymous.app.exp.direct",
-  "ngrokPid": 41486
+  "ngrokPid": 2421
 }

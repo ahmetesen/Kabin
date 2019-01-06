@@ -7,7 +7,7 @@ import {HomeScreen, ProfileScreen, SettingsScreen } from './screens/ready';
 import ErrorManager from './core/ErrorManager';
 import LandingScreen from './screens/LandingScreen';
 
-const pagesThatInDevelopment = "Activation"
+const pagesThatInDevelopment = "Landing"
 class App extends React.Component {
 
     constructor(props){
@@ -50,47 +50,51 @@ class App extends React.Component {
     };
 }
 
-const CreateUserStack = createStackNavigator(
+const AuthStack = createStackNavigator(
     {
+        Landing: LandingScreen,
         Name: NameScreen, 
         CreateEmail:CreateEmailScreen, 
         CreatePassword:CreatePasswordScreen, 
-        Activation: ActivationScreen
+        Activation: ActivationScreen,
+        Email: EmailScreen,
+        Password: PasswordScreen
     },
     {
         headerMode:'none'
     }
 );
-const LoginStack = createStackNavigator({Email: EmailScreen, Password: PasswordScreen});
-const MainTab = createBottomTabNavigator({
-    Home: HomeScreen,
+
+const LoggedTab = createBottomTabNavigator({
     Profile: ProfileScreen,
+    Home: HomeScreen,
     Settings: SettingsScreen
 },
 {
     initialRouteName: 'Home',
-    defaultNavigationOptions:{
-        headerStyle: {
-            backgroundColor: '#f4511e',
-        },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-            fontFamily: "nunito-black",
-            fontSize:40
-        },
+    tabBarOptions:{
+        labelStyle:{
+            fontSize:18,
+            fontFamily:'nunito-semibold'
+        }
     }
 });
+
+const LoggedNavigator = createStackNavigator({
+    Logged:LoggedTab
+},{
+    initialRouteName: 'Logged'
+});
+
 const AppNavigator = createSwitchNavigator({
         App:App,
-        Name:NameScreen,
-        Landing: LandingScreen,
-        Login:LoginStack,
-        CreateUser: CreateUserStack,
-        Main: MainTab
+        Auth: AuthStack,
+        Main: LoggedNavigator
     },
     {
         initialRouteName: 'App',
     }
 );
 
-export default createAppContainer(AppNavigator);
+const appContainer = createAppContainer(AppNavigator);
+export default appContainer;

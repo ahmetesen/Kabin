@@ -37,6 +37,12 @@ const updateProfileErrors = {
 const reloadUserDataErrors = {
     "other":"Kullanıcı bilgisi getirilirken bir hata oluştu :("
 };
+const passwordResetErrors = {
+    "other":"Parola sıfırlama maili sırasında bir hata oluştu :("
+};
+const logOutErrors = {
+    "other":"Çıkış sırasında bir hata oluştu :("
+};
 
 const firebaseErrors = {
     signInWithEmailAndPassword: signInWithEmailAndPasswordErrors,
@@ -45,6 +51,8 @@ const firebaseErrors = {
     sendEmailVerification:sendEmailVerificationErrors,
     updateProfile:updateProfileErrors,
     reloadUserData:reloadUserDataErrors,
+    logOut:logOutErrors,
+    passwordReset:passwordResetErrors,
     genericError:"Bu hatayı hiç beklemiyorduk. Kontrol edeceğiz. Daha sonra tekrar dener misiniz?"
 };
 
@@ -118,8 +126,15 @@ export default class Firebase {
         );
     }
 
-    signInWithEmailAndPassword(email,password,callback){
-        var value = this.auth.signInWithEmailAndPassword(email,"");
+    signInWithEmailAndPassword(email,password,success,fail){
+        var value = this.auth.signInWithEmailAndPassword(email,password).then((userCredential)=>{
+            if(userCredential.user)
+                success(userCredential.user);
+            else
+                fail(errorTextBuilder("","signInWithEmailAndPassword"));
+        }).catch((error)=>{
+            fail(errorTextBuilder(error.code,"signInWithEmailAndPassword"));
+        });
         return value;
     }
 
@@ -148,13 +163,20 @@ export default class Firebase {
         );
     }
 
-    LogOut(){
-        this.auth.signOut();
+    logOut(success,fail){
+        this.auth.signOut().then(()=>{
+            success();
+        }).catch((error)=>{
+            fail(errorTextBuilder(error.code,"logOut"));
+        });
     }
 
-    passwordReset(email){
-        var value = this.auth.sendPasswordResetEmail(email);
-        return value;
+    passwordReset(email,success,fail){
+        this.auth.sendPasswordResetEmail(email).then(()=>{
+            success();
+        }).catch((error)=>{
+            fail(errorTextBuilder(error.code,"passwordReset"));
+        });
     }
 
     changePassword(password){

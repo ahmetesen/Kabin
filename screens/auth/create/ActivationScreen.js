@@ -8,7 +8,7 @@ import SecondaryButton from '../../../components/buttons/SecondaryButton';
 import {styles} from './style';
 import Firebase from '../../../core/Firebase';
 import PrimaryButton from '../../../components/buttons/PrimaryButton';
-export default class NameScreen extends React.Component{
+export default class ActivationScreen extends React.Component{
     _initialState={
         name:'',
         email:'',
@@ -42,7 +42,7 @@ export default class NameScreen extends React.Component{
                 this.props.navigation.navigate('Main',{
                     name: this.state.name,
                     email: this.state.email
-                })
+                });
             });
                 
         },
@@ -94,7 +94,7 @@ export default class NameScreen extends React.Component{
                             <TextBlock>{this.state.response}</TextBlock>
                         </View>
                         <View style={{...styles.infoContainer,alignItems:'center'}}>
-                            <PrimaryButton title="Linke tıkladım"></PrimaryButton>
+                            <PrimaryButton onPress={this._primaryPress} title="Linke tıkladım"></PrimaryButton>
                         </View>
                     </View>
                     <View style={styles.footerContainer}>

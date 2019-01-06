@@ -8,7 +8,9 @@ import Hr from '../../../components/shapes/Hr';
 import SecondaryButton from '../../../components/buttons/SecondaryButton';
 import {styles} from './style';
 import Firebase from '../../../core/Firebase';
+import { StackActions, NavigationActions } from 'react-navigation';
 export default class CreatePasswordScreen extends React.Component{
+
     _initialState={
         name:'',
         email:'',
@@ -41,7 +43,20 @@ export default class CreatePasswordScreen extends React.Component{
             ()=>{
                 
                 this.spinner.hideSpinner(()=>{
-                    this.props.navigation.navigate("Activation",{name:this.state.name,email:this.state.email});
+                    const resetAction = StackActions.reset({
+                        index: 1,
+                        actions: [
+                            NavigationActions.navigate({
+                                routeName:'Landing'
+                            }),
+                            NavigationActions.navigate({
+                                routeName: 'Activation', 
+                                params:{name:this.state.name,email:this.state.email} 
+                            })
+                        ]
+                    });
+                    this.props.navigation.dispatch(resetAction);
+                    //this.props.navigation.navigate("Activation",{name:this.state.name,email:this.state.email});
                 });
             },
             (response)=>{
@@ -60,7 +75,7 @@ export default class CreatePasswordScreen extends React.Component{
             this._signUserUp();
     }
     _secondaryPress(event){
-        this.props.navigation.navigate('Login');
+        this.props.navigation.navigate('Email');
     }
     render(){
         return(

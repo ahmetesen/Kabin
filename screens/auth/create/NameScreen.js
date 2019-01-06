@@ -33,7 +33,7 @@ export default class NameScreen extends React.Component{
             this.props.navigation.navigate("CreateEmail",{name:this.state.name});
     }
     _secondaryPress(event){
-        this.props.navigation.navigate('Login');
+        this.props.navigation.navigate('Email');
     }
     render(){
         return(

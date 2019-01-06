@@ -8,6 +8,7 @@ import Hr from '../../../components/shapes/Hr';
 import SecondaryButton from '../../../components/buttons/SecondaryButton';
 import {styles} from './style';
 import Firebase from '../../../core/Firebase';
+import { StackActions, NavigationActions } from 'react-navigation';
 export default class CreateEmailScreen extends React.Component{
     _initialState={
         name:'',
@@ -73,7 +74,7 @@ export default class CreateEmailScreen extends React.Component{
             this._checkIsUserLoggedAlready();
     }
     _secondaryPress(event){
-        this.props.navigation.navigate('Login');
+        this.props.navigation.navigate('Email');
     }
     render(){
         return(

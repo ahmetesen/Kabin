@@ -28,7 +28,7 @@
             "type": "reactnative",
             "request": "attach",
             "sourceMaps": true,
-            "port": "19003",
+            "port": "19001",
             "outDir": "${workspaceRoot}/.vscode/.react"
         },
         {
