@@ -21,8 +21,10 @@ export default class TextBlock extends React.Component{
             style.push(styles.low);
         if(this.props.italic)
             style.push(styles.italic);
+        if(this.props.small)
+            style.push(styles.small);
         return(
-            <Text style={style}>
+            <Text {...this.props} style={style}>
                 {this.props.children}
             </Text>
         );
@@ -51,6 +53,9 @@ const styles = StyleSheet.create({
     },
     big:{
         fontSize:24
+    },
+    small:{
+        fontSize:14
     },
     italic:{
         fontFamily: 'nunito-lightitalic'

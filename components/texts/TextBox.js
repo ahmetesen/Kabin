@@ -12,6 +12,7 @@ export default class TextBox extends React.Component{
         return(
             <Input
                 style={styles.componentStyle}
+                selectionColor='#f9f9f9'
                 containerStyle={styles.containerStyle}
                 inputContainerStyle={styles.inputContainerStyle}
                 placeholder=''
@@ -27,13 +28,14 @@ export default class TextBox extends React.Component{
 
 const styles = StyleSheet.create({
     componentStyle:{
-        
     },
     containerStyle:{
         margin:0,
-        padding:0
+        padding:0,
+        width:'100%',
     },    
     inputContainerStyle:{
+        borderBottomColor:'transparent',
         margin:0,
         padding:0
     },
@@ -43,10 +45,11 @@ const styles = StyleSheet.create({
         fontSize: 18
     },
     placeHolderStyle:{
-        color:'#F9F9F9',
+        color:'#DDDDDD',
     },
     errorStyle:{
-        color:'#FF3545'
+        color:'#FFA7AE',
+        fontSize:16
     }
 });
 

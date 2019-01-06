@@ -1,12 +1,13 @@
 import React from 'react';
 import {AppLoading, Asset, Font, Icon} from 'expo';
-import {createAppContainer, createStackNavigator, createSwitchNavigator} from 'react-navigation';
+import {createAppContainer, createStackNavigator, createSwitchNavigator, createBottomTabNavigator} from 'react-navigation';
 import {ActivationScreen,CreateEmailScreen,NameScreen, CreatePasswordScreen} from './screens/auth/create';
 import { EmailScreen, PasswordScreen } from './screens/auth/login';
+import {HomeScreen, ProfileScreen, SettingsScreen } from './screens/ready';
 import ErrorManager from './core/ErrorManager';
 import LandingScreen from './screens/LandingScreen';
 
-const pagesThatInDevelopment = "Name"
+const pagesThatInDevelopment = "Activation"
 class App extends React.Component {
 
     constructor(props){
@@ -52,9 +53,8 @@ class App extends React.Component {
 const CreateUserStack = createStackNavigator(
     {
         Name: NameScreen, 
-        Email:CreateEmailScreen, 
-        CreatePassword: 
-        CreatePasswordScreen, 
+        CreateEmail:CreateEmailScreen, 
+        CreatePassword:CreatePasswordScreen, 
         Activation: ActivationScreen
     },
     {
@@ -62,12 +62,31 @@ const CreateUserStack = createStackNavigator(
     }
 );
 const LoginStack = createStackNavigator({Email: EmailScreen, Password: PasswordScreen});
+const MainTab = createBottomTabNavigator({
+    Home: HomeScreen,
+    Profile: ProfileScreen,
+    Settings: SettingsScreen
+},
+{
+    initialRouteName: 'Home',
+    defaultNavigationOptions:{
+        headerStyle: {
+            backgroundColor: '#f4511e',
+        },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+            fontFamily: "nunito-black",
+            fontSize:40
+        },
+    }
+});
 const AppNavigator = createSwitchNavigator({
         App:App,
         Name:NameScreen,
         Landing: LandingScreen,
         Login:LoginStack,
-        CreateUser: CreateUserStack
+        CreateUser: CreateUserStack,
+        Main: MainTab
     },
     {
         initialRouteName: 'App',

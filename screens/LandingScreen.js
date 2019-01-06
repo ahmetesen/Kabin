@@ -17,7 +17,7 @@ export default class LandingScreen extends React.Component{
     }
 
     _secondaryPress(event){
-        console.log("secondary pressed");
+        this.props.navigation.navigate('Login');
     }
 
     render(){
@@ -30,7 +30,7 @@ export default class LandingScreen extends React.Component{
                     <View style={styles.carouselContainer}>
                         <CarouselContainer entries={entries} />
                     </View>
-                    <View style={styles.buttonContainer}>
+                    <View style={styles.footerContainer}>
                         <PrimaryButton onPress={this._primaryPress} title="Hadi Başlayalım"></PrimaryButton>
                         <SecondaryButton onPress={this._secondaryPress} title="Giriş Yap"></SecondaryButton>
                     </View>
@@ -62,15 +62,15 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     logoContainer:{
-        flex:.4,
-        justifyContent:'center'
-    },
-    carouselContainer:{
-        flex:.2,
+        height:100,
         justifyContent:'flex-end'
     },
-    buttonContainer: {
-        flex: .4,
+    carouselContainer:{
+        flex:1,
         justifyContent:'center'
+    },
+    footerContainer: {
+        height:160,
+        justifyContent:'flex-start'
     }
 });
