@@ -39,22 +39,19 @@ export default class CreatePasswordScreen extends React.Component{
 
     }
     _signUserIn(){
-        this.spinner.showSpinner();
+        SpinnerContainer.getInstance().showSpinner();
         Firebase.getInstance().signInWithEmailAndPassword(this.state.email,this.state.password,
             (user)=>{
-                this.spinner.hideSpinner(()=>{
+                SpinnerContainer.getInstance().hideSpinner(()=>{
                     if(user.emailVerified)
-                        this.props.navigation.navigate('Main',{
-                            name: user.displayName,
-                            email: user.email
-                        });
+                        this.props.navigation.navigate('Main');
                     else
                         this.props.navigation.navigate("Activation",{name:this.state.name,email:this.state.email});
                     console.log(user);
                 });
             },
             (response)=>{
-                this.spinner.hideSpinner(()=>{
+                SpinnerContainer.getInstance().hideSpinner(()=>{
                     this.setState({errorMessage:response});
                 });
             }
@@ -71,12 +68,12 @@ export default class CreatePasswordScreen extends React.Component{
         this.props.navigation.navigate('Name');
     }
     _linkPress(event){
-        this.spinner.showSpinner();
+        SpinnerContainer.getInstance().showSpinner();
         Firebase.getInstance().passwordReset(this.state.email,()=>{
             this.setState({errorMessage:"Şifre sıfırlama epostası gönderildi."});
-            this.spinner.hideSpinner();
+            SpinnerContainer.getInstance().hideSpinner();
         },(error)=>{
-            this.spinner.hideSpinner(()=>{
+            SpinnerContainer.getInstance().hideSpinner(()=>{
                 this.setState({errorMessage:error});
             });
         });
@@ -119,7 +116,6 @@ export default class CreatePasswordScreen extends React.Component{
                         <SecondaryButton title="Üye Ol" onPress={this._secondaryPress}></SecondaryButton>
                     </View>
                 </View>
-                <SpinnerContainer ref={ref=>this.spinner = ref}></SpinnerContainer>
             </GradientContainer>
         );
     }

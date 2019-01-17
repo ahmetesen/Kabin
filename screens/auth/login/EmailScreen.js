@@ -23,9 +23,6 @@ export default class CreateEmailScreen extends React.Component{
         this.setState({email:value.toLowerCase(),errorMessage:""});
 
     }
-    componentDidMount(){
-        console.log(this.props.navigation);
-    }
     _validateEmail(){
         var email = this.state.email;
         var reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

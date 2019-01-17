@@ -49,16 +49,16 @@ export default class CreateEmailScreen extends React.Component{
         return false;
     }
     _checkIsUserLoggedAlready(){
-        this.spinner.showSpinner();
+        SpinnerContainer.getInstance().showSpinner();
         Firebase.getInstance().checkUserIsAlreadyExist(this.state.email,
             ()=>{
                 
-                this.spinner.hideSpinner(()=>{
+                SpinnerContainer.getInstance().hideSpinner(()=>{
                     this.props.navigation.navigate("CreatePassword",{name:this.state.name,email:this.state.email});
                 });
             },
             (response)=>{
-                this.spinner.hideSpinner(()=>{
+                SpinnerContainer.getInstance().hideSpinner(()=>{
                     this.setState({errorMessage:response});
                 });
                 
@@ -108,7 +108,6 @@ export default class CreateEmailScreen extends React.Component{
                         <SecondaryButton title="Giriş Yap" onPress={this._secondaryPress}></SecondaryButton>
                     </View>
                 </View>
-                <SpinnerContainer ref={ref=>this.spinner = ref}></SpinnerContainer>
             </GradientContainer>
         );
     }

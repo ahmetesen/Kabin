@@ -1,20 +1,44 @@
 import React from 'react';
 import {AppLoading, Asset, Font, Icon} from 'expo';
-import {createAppContainer, createStackNavigator, createSwitchNavigator, createBottomTabNavigator} from 'react-navigation';
+import {View} from 'react-native';
+import {Button, createAppContainer, createStackNavigator, createSwitchNavigator, createBottomTabNavigator} from 'react-navigation';
 import {ActivationScreen,CreateEmailScreen,NameScreen, CreatePasswordScreen} from './screens/auth/create';
 import { EmailScreen, PasswordScreen } from './screens/auth/login';
-import {HomeScreen, ProfileScreen, SettingsScreen } from './screens/ready';
+import {HomeScreen, ProfileScreen, SettingsScreen, AddFlightScreen } from './screens/ready';
 import ErrorManager from './core/ErrorManager';
 import LandingScreen from './screens/LandingScreen';
+import Firebase from './core/Firebase';
+import {FontAwesome} from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
+import {tabHeaderStyle} from './components/styles/global'
+import SpinnerContainer from './components/views/SpinnerContainer';
 
-const pagesThatInDevelopment = "Landing"
 class App extends React.Component {
-
+    collectedLoaders=0;
+    startPage = "Landing";
     constructor(props){
         super(props);
         this._handleFinishLoading = this._handleFinishLoading.bind(this);
     }
-
+    componentWillMount(){
+        Firebase.initializeApp();
+        checkStateChangedAndUnsubscribe = Firebase.getInstance().auth.onAuthStateChanged((user)=>{
+            //TODO: Kullanıcı verification mail'ini onayladı mı check et.
+            if(user)
+                this.startPage = "Main";
+            checkStateChangedAndUnsubscribe();
+            this.loaderCollected();
+        });
+    }
+    loaderCollected(){
+        if(this.collectedLoaders>0)
+        {
+            this.collectedLoaders=0;
+            this.props.navigation.navigate(this.startPage);
+        }
+        this.collectedLoaders++;
+    }
     render(){
         return(
             <AppLoading
@@ -30,8 +54,7 @@ class App extends React.Component {
     };
   
     _handleFinishLoading = () => {
-        console.log("app loading finished");
-        this.props.navigation.navigate(pagesThatInDevelopment);
+        this.loaderCollected();
     };
   
     _loadResourcesAsync = async () => {
@@ -65,26 +88,104 @@ const AuthStack = createStackNavigator(
     }
 );
 
-const LoggedTab = createBottomTabNavigator({
-    Profile: ProfileScreen,
-    Home: HomeScreen,
-    Settings: SettingsScreen
-},
-{
-    initialRouteName: 'Home',
-    tabBarOptions:{
-        labelStyle:{
-            fontSize:18,
-            fontFamily:'nunito-semibold'
+const ProfileStack = createStackNavigator(
+    {
+        profile:ProfileScreen
+    },
+    {        
+        defaultNavigationOptions:{
+            headerTitle:'Profil',
+            headerTitleStyle:{
+                ...tabHeaderStyle,
+            }
+            
+        },
+        navigationOptions:{
+            tabBarIcon: ({ tintColor }) => (
+                <FontAwesome name="user-o" size={36} color={tintColor} />
+            )
         }
+    }
+);
+
+const HomeStack = createStackNavigator(
+    {
+        home:HomeScreen
+    },
+    {        
+        defaultNavigationOptions:{
+            headerTitle:'Kabin',
+            headerTitleStyle:{
+                ...tabHeaderStyle,
+                fontSize:36,
+                fontFamily:'nunito-black'
+            }
+
+        },
+        navigationOptions:{
+            tabBarIcon: ({ tintColor }) => (
+                <Ionicons name="ios-chatbubbles" size={36} color={tintColor} />
+            ),
+        }
+    }
+);
+
+const SettingsStack = createStackNavigator(
+    {
+        settings:SettingsScreen
+    },
+    {
+        defaultNavigationOptions:{
+            headerTitle:'Ayarlar',
+            headerTitleStyle:tabHeaderStyle
+        },
+        navigationOptions:{
+            tabBarIcon: ({ tintColor }) => (
+                <Feather name="settings" size={36} color={tintColor} />
+            ),
+        }
+    }
+);
+
+const LoggedTab = createBottomTabNavigator(
+    {
+        Profile: {
+            screen:ProfileStack,
+        },
+        Home: {
+            screen:HomeStack,
+        },
+        Settings: {
+            screen:SettingsStack
+        }
+    },
+    {
+        initialRouteName: 'Home',
+        tabBarOptions:{
+            showLabel:false,
+            activeTintColor:"#283AD8",
+        }
+    },
+);
+
+const LoggedNavigator = createStackNavigator({
+    Logged:{
+        screen:LoggedTab,
+        navigationOptions:{
+            header:null
+        }
+    },
+    AddFlight:{
+        screen:AddFlightScreen
+    }
+},{
+    initialRouteName: 'Logged',
+    defaultNavigationOptions:{
+        headerBackTitle:null,
+        headerTintColor:'#283AD8',
     }
 });
 
-const LoggedNavigator = createStackNavigator({
-    Logged:LoggedTab
-},{
-    initialRouteName: 'Logged'
-});
 
 const AppNavigator = createSwitchNavigator({
         App:App,
@@ -96,5 +197,18 @@ const AppNavigator = createSwitchNavigator({
     }
 );
 
-const appContainer = createAppContainer(AppNavigator);
-export default appContainer;
+const AppContainer = createAppContainer(AppNavigator);
+
+export default class TopView extends React.Component{
+    render(){
+        return(
+            <View style={{flex:1}}>
+                <AppContainer/>
+                <SpinnerContainer/>
+            </View>
+        )
+    }
+}
+
+
+//export default appContainer;

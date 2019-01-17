@@ -38,11 +38,11 @@ export default class CreatePasswordScreen extends React.Component{
 
     }
     _signUserUp(){
-        this.spinner.showSpinner();
+        SpinnerContainer.getInstance().showSpinner();
         Firebase.getInstance().createUserWithEmailAndPassword(this.state.name,this.state.email,this.state.password,
             ()=>{
                 
-                this.spinner.hideSpinner(()=>{
+                SpinnerContainer.getInstance().hideSpinner(()=>{
                     const resetAction = StackActions.reset({
                         index: 1,
                         actions: [
@@ -60,7 +60,7 @@ export default class CreatePasswordScreen extends React.Component{
                 });
             },
             (response)=>{
-                this.spinner.hideSpinner(()=>{
+                SpinnerContainer.getInstance().hideSpinner(()=>{
                     this.setState({errorMessage:response});
                 });
                 
@@ -111,7 +111,6 @@ export default class CreatePasswordScreen extends React.Component{
                         <SecondaryButton title="Giriş Yap" onPress={this._secondaryPress}></SecondaryButton>
                     </View>
                 </View>
-                <SpinnerContainer ref={ref=>this.spinner = ref}></SpinnerContainer>
             </GradientContainer>
         );
     }

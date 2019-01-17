@@ -5,21 +5,20 @@ export default class TextBox extends React.Component{
 
     constructor(props){
         super(props);
-        //this.state = initialState;
     }
     
     render(){
         return(
             <Input
-                style={styles.componentStyle}
-                selectionColor='#f9f9f9'
+                style={[styles.componentStyle,this.props.style]}
+                selectionColor={this.props.dark?'#333333':'#f9f9f9'}
                 containerStyle={styles.containerStyle}
                 inputContainerStyle={styles.inputContainerStyle}
                 placeholder=''
                 shake={true}
                 errorStyle={styles.errorStyle}
-                inputStyle={styles.inputStyle}
-                placeholderTextColor={styles.placeHolderStyle.color}
+                inputStyle={this.props.dark?styles.inputDarkStyle:styles.inputStyle}
+                placeholderTextColor={this.props.dark?styles.placeHolderDarkStyle.color:styles.placeHolderStyle.color}
                 {...this.props}
             />
         );
@@ -44,8 +43,17 @@ const styles = StyleSheet.create({
         fontFamily: 'nunito-light',
         fontSize: 18
     },
+    inputDarkStyle:{
+        color:'#333333',
+        fontFamily: 'nunito-light',
+        fontSize: 18
+    },
+
     placeHolderStyle:{
         color:'#DDDDDD',
+    },
+    placeHolderDarkStyle:{
+        color:'#666666',
     },
     errorStyle:{
         color:'#FFA7AE',

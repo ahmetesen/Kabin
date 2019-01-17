@@ -5,10 +5,18 @@ export default class SpinnerContainer extends React.Component{
         fadeAnim: new Animated.Value(0),
         visible:false
     }
+    _counter = 0;
+    static _instance;
     constructor(props){
         super(props);
         this.showSpinner = this.showSpinner.bind(this);
         this.hideSpinner = this.hideSpinner.bind(this);
+        _instance=this;
+    }
+
+    static getInstance(){
+        if(_instance)
+            return _instance;
     }
 
     _fadeIn= Animated.timing(
@@ -24,22 +32,30 @@ export default class SpinnerContainer extends React.Component{
         }
     )
 
-    _fadeOut
-
     componentDidMount(){
     }
 
     showSpinner(){
-        this.setState({visible:true});
-        this._fadeIn.start();
+        if(this._counter==0){
+            this.setState({visible:true});
+            this._fadeIn.start();
+        }
+        this._counter ++;
     }
 
     hideSpinner(action){
-        this._fadeOut.start(()=>{
-            this.setState({visible:false});
-            if(action)
-                action();
-        });
+        this._counter--;
+        if(this._counter == 0){
+            this._fadeOut.start(()=>{
+                this.setState({visible:false});
+                if(action)
+                    action();
+            });
+        }
+        else if(this._counter<0){
+            throw new Error("Bir hata oluştu. Hata kodu: 1001");
+        }
+
     }
 
     render(){

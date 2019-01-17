@@ -65,7 +65,6 @@ export default class NameScreen extends React.Component{
 
                         </View>
                     </KeyboardAvoidingView>
-                    {console.log("rendered?")}
                     <View style={styles.footerContainer}>
                         <Hr title="Zaten üye misin?"></Hr>
                         <SecondaryButton title="Giriş Yap" onPress={this._secondaryPress}></SecondaryButton>

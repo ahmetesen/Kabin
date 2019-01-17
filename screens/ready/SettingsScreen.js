@@ -4,26 +4,27 @@ import PrimaryButton from '../../components/buttons/PrimaryButton';
 import Firebase from '../../core/Firebase';
 import SpinnerContainer from '../../components/views/SpinnerContainer';
 import { StackActions, NavigationActions } from 'react-navigation';
+import { Feather } from '@expo/vector-icons';
+
 
 export default class SettingsScreen extends React.Component {
     static navigationOptions = {
-        title: 'Settings',
-    };
+        
+      };
 
     constructor(props){
         super(props);
         this._primaryPress = this._primaryPress.bind(this);
     }
-
     _primaryPress(event){
-        this.spinner.showSpinner();
+        SpinnerContainer.getInstance().showSpinner();
         Firebase.getInstance().logOut(()=>{
-            this.spinner.hideSpinner(()=>{
+            SpinnerContainer.getInstance().hideSpinner(()=>{
                 this.props.navigation.navigate('Landing');
             }
         )},
         ()=>{
-            this.spinner.hideSpinner(null);
+            SpinnerContainer.getInstance().hideSpinner(null);
         });
     }
     render() {
@@ -32,7 +33,6 @@ export default class SettingsScreen extends React.Component {
         return(
             <View style={{flex:1, justifyContent:'flex-end', alignItems:'center'}}>
                 <PrimaryButton title="Çıkış Yap" onPress={this._primaryPress} />
-                <SpinnerContainer ref={ref=>this.spinner = ref}></SpinnerContainer>
             </View>
         );
     }

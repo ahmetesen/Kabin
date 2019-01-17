@@ -35,20 +35,17 @@ export default class ActivationScreen extends React.Component{
         AppState.removeEventListener('change', this._handleAppStateChange);
     }
     _reloadUser(){
-        this.spinner.showSpinner();
+        SpinnerContainer.getInstance().showSpinner();
         Firebase.getInstance().reloadUserData((user)=>{
             if(user.emailVerified)
-            this.spinner.hideSpinner(()=>{
-                this.props.navigation.navigate('Main',{
-                    name: this.state.name,
-                    email: this.state.email
-                });
+            SpinnerContainer.getInstance().hideSpinner(()=>{
+                this.props.navigation.navigate('Main');
             });
                 
         },
         (fail)=>{
             this.setState({response:fail});
-            this.spinner.hideSpinner(null);
+            SpinnerContainer.getInstance().hideSpinner(null);
         });
     }
     _handleAppStateChange(nextAppState){
@@ -64,14 +61,14 @@ export default class ActivationScreen extends React.Component{
 
     _secondaryPress(event){
         this.setState({response:''});
-        this.spinner.showSpinner();
+        SpinnerContainer.getInstance().showSpinner();
         Firebase.getInstance().sendEmailVerification(
             ()=>{
                 this.setState({response:'Epostan tekrar gönderildi.'});
-                this.spinner.hideSpinner(null);
+                SpinnerContainer.getInstance().hideSpinner(null);
             },
             (error)=>{
-                this.spinner.hideSpinner(null);
+                SpinnerContainer.getInstance().hideSpinner(null);
                 this.setState({response:error});
             }
         );
@@ -102,7 +99,6 @@ export default class ActivationScreen extends React.Component{
                         <SecondaryButton onPress={this._primaryPress} title="Tekrar Gönder" onPress={this._secondaryPress}></SecondaryButton>
                     </View>
                 </View>
-                <SpinnerContainer ref={ref=>this.spinner = ref}></SpinnerContainer>
             </GradientContainer>
         );
     }

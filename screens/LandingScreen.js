@@ -5,6 +5,7 @@ import TextBlock from '../components/texts/TextBlock';
 import CarouselContainer from '../components/views/CarouselContainer' ;
 import { StyleSheet, View } from 'react-native';
 import GradientContainer from '../components/views/GradientContainer';
+import SpinnerContainer from '../components/views/SpinnerContainer';
 export default class LandingScreen extends React.Component{
     constructor(props){
         super(props);
@@ -15,15 +16,9 @@ export default class LandingScreen extends React.Component{
     _primaryPress(event){
         this.props.navigation.navigate('Name');
     }
-
     _secondaryPress(event){
         this.props.navigation.navigate('Email');
     }
-
-    componentDidMount(){
-        console.log(this.props.navigation);
-    }
-
     render(){
         return(
             <GradientContainer>

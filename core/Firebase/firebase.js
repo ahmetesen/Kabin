@@ -1,6 +1,7 @@
 import app from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
+import 'firebase/functions';
 import {TEST_PASSWORD} from '../../constants/global-strings';
 
 const signInWithEmailAndPasswordErrors = {
@@ -77,16 +78,31 @@ const config = {
   messagingSenderId: '625321362515',
 };
 
+const prodConfig = {
+    apiKey: 'AIzaSyBQn5eEA_v6_g2t_jviSE5kuWVIScgUOwg',
+    authDomain: 'kabin-64963.firebaseapp.com',
+    databaseURL: 'https://kabin-64963.firebaseio.com',
+    projectId: 'kabin-64963',
+    storageBucket: 'kabin-64963.appspot.com',
+    messagingSenderId: '625321362515',
+  };
+
 export default class Firebase {
     activeUser=null;
     static _instance;
+    _initializeCompletedAction = null;
     constructor(){
         if(Firebase._instance)
             throw new Error('firebase is already instantiated');
         app.initializeApp(config);
         this.auth = app.auth();
         this.db = app.database();
+        this.funcs = app.functions();
+        this.funcs.useFunctionsEmulator("http://localhost:8010")
+        this.addOrJoinRoom = app.functions().httpsCallable('addOrJoinRoom');
+        this.saveNewUser = app.functions().httpsCallable('saveNewUser');
         Firebase._instance = this;
+        
         this.auth.onAuthStateChanged((user)=>{
             if(user)
                 activeUser = user;
@@ -94,11 +110,16 @@ export default class Firebase {
                 activeUser = null;
         });
     }
-
     static getInstance(){
         if(Firebase._instance == null)
-            Firebase._instance = new Firebase();
+            throw new Error("You must initialize Firebase with Firebase.initializeApp(initializedAction)");
         return Firebase._instance;
+    }
+    static initializeApp(initializedAction=null){
+        if(Firebase._instance != null)
+            throw new Error("You have already initialized Firebase. You can use Firebase.getInstance()");
+        else
+            Firebase._instance = new Firebase();        
     }
 
     reloadUserData(success,fail){
@@ -110,7 +131,29 @@ export default class Firebase {
         })
     }
 
+    addRoom(date,flightCode,success,fail){
+        this.auth.currentUser.getIdTokenResult().then((result)=>{
+            this.addOrJoinRoom({date:date,flightCode:flightCode,idToken:result.token}).then((result) => {
+                success(result);
+            }).catch((error)=>{
+                fail(error.message);
+            });
+        }).catch((error) => {
+            fail(error.message);
+        });
+    }
+
+    saveUser(success,fail){
+        var displayName = this.auth.currentUser.displayName;
+        this.saveNewUser({displayName}).then((result)=>{
+            success();
+        }).catch((error)=>{
+            fail();
+        });
+    }
+
     checkUserIsAlreadyExist(email,success,fail){
+
         return this.auth.signInWithEmailAndPassword(email,TEST_PASSWORD).then(
             (response)=>{
                 let errorText = firebaseErrors.signInWithEmailAndPassword.restrictedPassword;
@@ -124,6 +167,7 @@ export default class Firebase {
                     fail(errorTextBuilder(response.code,"checkUserIsAlreadyExist"));
             }
         );
+
     }
 
     signInWithEmailAndPassword(email,password,success,fail){
