@@ -102,13 +102,6 @@ export default class Firebase {
         this.addOrJoinRoom = app.functions().httpsCallable('addOrJoinRoom');
         this.saveNewUser = app.functions().httpsCallable('saveNewUser');
         Firebase._instance = this;
-        
-        this.auth.onAuthStateChanged((user)=>{
-            if(user)
-                activeUser = user;
-            else
-                activeUser = null;
-        });
     }
     static getInstance(){
         if(Firebase._instance == null)
@@ -123,9 +116,8 @@ export default class Firebase {
     }
 
     reloadUserData(success,fail){
-        activeUser.reload().then(()=>{
-            activeUser = app.auth().currentUser;
-            success(activeUser)
+        app.auth().currentUser.reload().then(()=>{
+            success(app.auth().currentUser)
         }).catch((error)=>{
             fail(errorTextBuilder(error.code,"reloadUserData"));
         })
@@ -143,12 +135,16 @@ export default class Firebase {
         });
     }
 
-    saveUser(success,fail){
+    getUser(success,fail){
         var displayName = this.auth.currentUser.displayName;
         this.saveNewUser({displayName}).then((result)=>{
-            success();
+            success(result.data.user);
         }).catch((error)=>{
-            fail();
+            if(error)
+                if(error.error)
+                    fail(error.error);
+                else
+                    fail(error.message);
         });
     }
 

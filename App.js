@@ -90,7 +90,7 @@ const AuthStack = createStackNavigator(
 
 const ProfileStack = createStackNavigator(
     {
-        profile:ProfileScreen
+        profilePage:ProfileScreen
     },
     {        
         defaultNavigationOptions:{
@@ -102,7 +102,7 @@ const ProfileStack = createStackNavigator(
         },
         navigationOptions:{
             tabBarIcon: ({ tintColor }) => (
-                <FontAwesome name="user-o" size={36} color={tintColor} />
+                <FontAwesome name="user-o" size={32} color={tintColor} />
             )
         }
     }
@@ -110,7 +110,7 @@ const ProfileStack = createStackNavigator(
 
 const HomeStack = createStackNavigator(
     {
-        home:HomeScreen
+        homePage:HomeScreen
     },
     {        
         defaultNavigationOptions:{
@@ -124,7 +124,7 @@ const HomeStack = createStackNavigator(
         },
         navigationOptions:{
             tabBarIcon: ({ tintColor }) => (
-                <Ionicons name="ios-chatbubbles" size={36} color={tintColor} />
+                <Ionicons name="ios-chatbubbles" size={32} color={tintColor} />
             ),
         }
     }
@@ -132,7 +132,7 @@ const HomeStack = createStackNavigator(
 
 const SettingsStack = createStackNavigator(
     {
-        settings:SettingsScreen
+        settingsPage:SettingsScreen
     },
     {
         defaultNavigationOptions:{
@@ -141,7 +141,7 @@ const SettingsStack = createStackNavigator(
         },
         navigationOptions:{
             tabBarIcon: ({ tintColor }) => (
-                <Feather name="settings" size={36} color={tintColor} />
+                <Feather name="settings" size={32} color={tintColor} />
             ),
         }
     }

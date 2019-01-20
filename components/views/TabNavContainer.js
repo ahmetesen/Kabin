@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {ScrollView, StyleSheet} from 'react-native';
 export default class TabNavContainer extends React.Component{
     constructor(props){
         super(props);
@@ -7,15 +7,16 @@ export default class TabNavContainer extends React.Component{
 
     render(){
         return (
-            <View props={this.props} style={[styles.style,this.props.style]} >
+            <ScrollView props={this.props} contentContainerStyle={[styles.style,this.props.contentContainerStyle]} >
                 {this.props.children}
-            </View>
+            </ScrollView>
         )
     }
 }
 
 const styles = StyleSheet.create({
     style:{
-        padding:16
+        padding:0,
+        backgroundColor:'#F9F9F9'
     }
 })

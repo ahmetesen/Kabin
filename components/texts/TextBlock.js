@@ -23,8 +23,10 @@ export default class TextBlock extends React.Component{
             style.push(styles.italic);
         if(this.props.small)
             style.push(styles.small);
+        if(this.props.black)
+            style.push(styles.black);
         return(
-            <Text {...this.props} style={style}>
+            <Text {...this.props} style={[style,this.props.style]} numberOfLines={this.props.numberOfLines?this.props.numberOfLines:0}>
                 {this.props.children}
             </Text>
         );
@@ -64,5 +66,8 @@ const styles = StyleSheet.create({
         fontFamily: 'nunito-black',
         fontSize:40,
         color:'white'
+    },
+    black: {
+        color: '#1D1D1D'
     }
 });
