@@ -25,7 +25,7 @@ export default class CreatePasswordScreen extends React.Component{
         this._linkPress = this._linkPress.bind(this);
     }
     componentWillMount(){
-        email = this.props.navigation.getParam('email','ahmetesen88@gmail.com');
+        email = this.props.navigation.getParam('email','');
         this.setState({email:email});
     }
     componentDidMount(){

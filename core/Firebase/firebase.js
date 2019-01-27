@@ -96,7 +96,6 @@ export default class Firebase {
             throw new Error('firebase is already instantiated');
         app.initializeApp(config);
         this.auth = app.auth();
-        this.db = app.database();
         this.funcs = app.functions();
         this.funcs.useFunctionsEmulator("http://localhost:8010")
         this.addOrJoinRoom = app.functions().httpsCallable('addOrJoinRoom');
@@ -124,13 +123,9 @@ export default class Firebase {
     }
 
     addRoom(date,flightCode,success,fail){
-        this.auth.currentUser.getIdTokenResult().then((result)=>{
-            this.addOrJoinRoom({date:date,flightCode:flightCode,idToken:result.token}).then((result) => {
-                success(result);
-            }).catch((error)=>{
-                fail(error.message);
-            });
-        }).catch((error) => {
+        this.addOrJoinRoom({date:date,flightCode:flightCode}).then((result) => {
+            success(result);
+        }).catch((error)=>{
             fail(error.message);
         });
     }
@@ -138,6 +133,7 @@ export default class Firebase {
     getUser(success,fail){
         var displayName = this.auth.currentUser.displayName;
         this.saveNewUser({displayName}).then((result)=>{
+            if(result)
             success(result.data.user);
         }).catch((error)=>{
             if(error)
@@ -222,14 +218,6 @@ export default class Firebase {
     changePassword(password){
         var value = this.auth.currentUser.updatePassword(password);
         return value;
-    }
-
-    user(uid){
-        this.db.ref('users/${uid}');
-    }
-
-    users(){
-        this.db.ref('users');
     }
 
     logError(log)

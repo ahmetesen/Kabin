@@ -7,7 +7,7 @@ export default class TabNavContainer extends React.Component{
 
     render(){
         return (
-            <ScrollView props={this.props} contentContainerStyle={[styles.style,this.props.contentContainerStyle]} >
+            <ScrollView props={this.props} style={this.props.style} contentContainerStyle={[styles.containerStyle,this.props.contentContainerStyle]} >
                 {this.props.children}
             </ScrollView>
         )
@@ -15,8 +15,7 @@ export default class TabNavContainer extends React.Component{
 }
 
 const styles = StyleSheet.create({
-    style:{
-        padding:0,
-        backgroundColor:'#F9F9F9'
+    containerStyle:{
+        padding:0
     }
 })

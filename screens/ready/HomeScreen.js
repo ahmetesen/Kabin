@@ -74,7 +74,7 @@ export default class HomeScreen extends React.Component {
             });
             RoomsContainer.sort();
             return (
-                <TabNavContainer style={{flex:1, justifyContent:'flex-start', alignItems:'stretch'}}>
+                <TabNavContainer style={{flex:1,backgroundColor:'#F9F9F9'}}>
                     <View style={{marginTop:4}}>
                         {RoomsContainer}
                     </View>

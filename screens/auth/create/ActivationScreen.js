@@ -24,8 +24,8 @@ export default class ActivationScreen extends React.Component{
     }
 
     componentWillMount(){
-        name = this.props.navigation.getParam('name','Misafir');
-        email = this.props.navigation.getParam('email','ahmetesen88@gmail.com');
+        name = this.props.navigation.getParam('name','');
+        email = this.props.navigation.getParam('email','');
         this.setState({name:name, email:email});
     }
     componentDidMount(){

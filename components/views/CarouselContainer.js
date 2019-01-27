@@ -14,6 +14,7 @@ export default class CarouselContainer extends React.Component{
                 <TextBlock big>
                     {item.item.title}
                 </TextBlock>
+                {item.item.icon}
                 <TextBlock italic>
                     {item.item.description}
                 </TextBlock>
@@ -33,8 +34,8 @@ export default class CarouselContainer extends React.Component{
                   width: 8,
                   height: 8,
                   borderRadius: 4,
-                  marginHorizontal: 8,
-                  backgroundColor: 'rgba(255, 255, 255, 0.92)'
+                  marginHorizontal: 2,
+                  backgroundColor: '#283AD8'
               }}
               inactiveDotStyle={{
                   // Define styles for inactive dots here
@@ -67,6 +68,6 @@ const styles = StyleSheet.create({
     container: {
         flex:1,
         alignItems: 'center',
-        justifyContent: 'space-around'
+        justifyContent: 'space-evenly'
     },
 });

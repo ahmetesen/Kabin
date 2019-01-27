@@ -29,7 +29,7 @@ export default class CreateEmailScreen extends React.Component{
         var valid = reg.test(String(email).toLowerCase());
         var errorMessage="";
         if(valid){
-            if(email.includes('@gmail.')){
+            if(email.includes('@')){
                 errorMessage="";
                 return true;
             }

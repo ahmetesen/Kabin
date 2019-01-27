@@ -5,7 +5,7 @@ import TextBlock from '../components/texts/TextBlock';
 import CarouselContainer from '../components/views/CarouselContainer' ;
 import { StyleSheet, View } from 'react-native';
 import GradientContainer from '../components/views/GradientContainer';
-import SpinnerContainer from '../components/views/SpinnerContainer';
+import {MaterialCommunityIcons,FontAwesome} from '@expo/vector-icons'
 export default class LandingScreen extends React.Component{
     constructor(props){
         super(props);
@@ -42,15 +42,18 @@ export default class LandingScreen extends React.Component{
 const entries=[
     {
         title:'Ekibini Bul', 
-        description:'Sıradaki uçuş arkadaşlarını bul ve onlarla konuş.'
+        description:'Sıradaki uçuş arkadaşlarını bul ve onlarla konuş.',
+        icon: <MaterialCommunityIcons name="account-search" size={96} color='#283AD8' />
     },
     {
         title: 'Destinasyonunu Gör',
-        description:'Destinasyonun hakkında bilgi al, yapılan yorumları gör.'
+        description:'Destinasyonun hakkında bilgi al, yapılan yorumları gör.',
+        icon: <FontAwesome name="paper-plane" size={96} color='#283AD8' />
     },
     {
         title: 'Geçmiş Uçuşlar',
-        description:'Hem kendinin, hem arkadaşlarının geçmiş uçuşlarını gör.'
+        description:'Hem kendinin, hem arkadaşlarının geçmiş uçuşlarını gör.',
+        icon: <FontAwesome name="history" size={96} color='#283AD8' />
     }
 ];
 
