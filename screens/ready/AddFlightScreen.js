@@ -8,6 +8,7 @@ import TextBox from '../../components/texts/TextBox';
 import { PrimaryButton } from '../../components/buttons';
 import {getCurrentDay,getNextYear, tickToDate} from '../../helpers/DateHelper'
 import Firebase from '../../core/Firebase';
+import SpinnerContainer from '../../components/views/SpinnerContainer';
 
 const currentDate = getCurrentDay();
 const maxDate = getNextYear();
@@ -53,19 +54,32 @@ export default class AddFlightScreen extends React.Component{
         var dateParts = this.state.date.split("/");
         var dateObject = new Date(dateParts[2], dateParts[1] - 1, +dateParts[0]);
         var timeStamp = dateObject.getTime();
-        var result = this._checkFlightCode(this.state.flightCode);
-        if(result)
+        var flightCode = this._checkFlightCode(this.state.flightCode);
+        if(flightCode)
         {
-            var selectedDate = tickToDate(this.state.date);
-            console.log(result, selectedDate);
-            return;
-            Firebase.getInstance().addRoom("13-01-2019","TK1",(data)=>{
-                console.log(data)
+            SpinnerContainer.getInstance().showSpinner();
+
+
+
+
+
+
+            Firebase.getInstance().addRoom(timeStamp,flightCode,(data)=>{
+                SpinnerContainer.getInstance().hideSpinner(()=>{
+                    if(data.status=200)
+                        this.props.navigation.goBack();
+                });
             },
-            (fail)=>{
-                console.log(fail)
+            (error)=>{
+                SpinnerContainer.getInstance().hideSpinner(()=>{
+                    
+                });
             });
         }
+
+
+
+        
         else{
             Alert.alert(
                 'Bilgi',

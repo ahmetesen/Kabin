@@ -23,12 +23,13 @@ export default class RoomListView extends React.Component{
         // if(!this.props.mustShown)
         //     return null;
         var title="";
-        if(this.props.title == "AA")
+        if(this.props.title == 'Z')
             title = "Reklam";
-        else if(this.props.title = "ZZ")
+        else if(this.props.title == 0)
             title = "Kabin İletişim"
-        else
-            title = this.props.title;
+        else{
+            title = this.props.title.split('+')[1];
+        }
         return(
             <View style={{flex:1}}>
                 <View style={styles.containerView}>

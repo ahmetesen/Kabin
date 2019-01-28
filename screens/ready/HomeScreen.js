@@ -13,6 +13,7 @@ export default class HomeScreen extends React.Component {
     _initialState = {
         user:null
     }
+    added = false;
     static navigationOptions = ({navigation})=>{
         return{
             headerRight:(
@@ -30,6 +31,19 @@ export default class HomeScreen extends React.Component {
     componentWillMount(){
         this.props.navigation.setParams({ _primaryPressed: this._primaryPressed });
         this.getUserData();
+    }
+    componentDidMount(){
+        this.subs = [
+            this.props.navigation.addListener('willFocus', () => {
+                if(this.added)
+                    this.getUserData();
+                this.added = false;
+            }),
+        ];
+    }
+
+    componentWillUnmount(){
+        this.subs.forEach(sub => sub.remove());
     }
 
     getUserData(){
@@ -60,6 +74,7 @@ export default class HomeScreen extends React.Component {
     }
 
     _primaryPressed(event){
+        this.added=true;
         this.props.navigation.navigate('AddFlight');
     }
 
@@ -73,6 +88,7 @@ export default class HomeScreen extends React.Component {
                 return (<RoomListView key={key} title={key} lastMessage={chatRooms[key].lastMessage} timeStamp={chatRooms[key].timeStamp} isAlive={chatRooms[key].isAlive} mustShown={chatRooms[key].mustShown} readYet={chatRooms[key].readYet} image={chatRooms[key].image} ></RoomListView>);
             });
             RoomsContainer.sort();
+            RoomsContainer.reverse();
             return (
                 <TabNavContainer style={{flex:1,backgroundColor:'#F9F9F9'}}>
                     <View style={{marginTop:4}}>

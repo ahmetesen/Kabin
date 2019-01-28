@@ -95,12 +95,7 @@ export default class Firebase {
         if(Firebase._instance)
             throw new Error('firebase is already instantiated');
         app.initializeApp(config);
-        this.auth = app.auth();
-        this.funcs = app.functions();
-        this.funcs.useFunctionsEmulator("http://localhost:8010")
-        this.addOrJoinRoom = app.functions().httpsCallable('addOrJoinRoom');
-        this.saveNewUser = app.functions().httpsCallable('saveNewUser');
-        Firebase._instance = this;
+        this.refreshAllFbInstances();
     }
     static getInstance(){
         if(Firebase._instance == null)
@@ -114,27 +109,43 @@ export default class Firebase {
             Firebase._instance = new Firebase();        
     }
 
+    refreshAllFbInstances(){
+        this.auth = app.auth();
+        this.funcs = app.functions();
+        this.funcs.useFunctionsEmulator("http://localhost:8010")
+        this.addOrJoinRoom = this.funcs.httpsCallable('addOrJoinRoom');
+        this.saveNewUser = this.funcs.httpsCallable('saveNewUser');
+        Firebase._instance = this;
+    }
+
     reloadUserData(success,fail){
-        app.auth().currentUser.reload().then(()=>{
-            success(app.auth().currentUser)
+        this.auth.currentUser.reload().then(()=>{
+            success()
         }).catch((error)=>{
             fail(errorTextBuilder(error.code,"reloadUserData"));
         })
     }
 
-    addRoom(date,flightCode,success,fail){
-        this.addOrJoinRoom({date:date,flightCode:flightCode}).then((result) => {
+
+
+
+    addRoom(timeStamp,flightCode,success,fail){
+        var displayName = this.auth.currentUser.displayName;
+        this.addOrJoinRoom({timeStamp,flightCode,displayName}).then((result) => {
             success(result);
         }).catch((error)=>{
             fail(error.message);
         });
     }
 
+
+
+
     getUser(success,fail){
         var displayName = this.auth.currentUser.displayName;
         this.saveNewUser({displayName}).then((result)=>{
             if(result)
-            success(result.data.user);
+                success(result.data.user);
         }).catch((error)=>{
             if(error)
                 if(error.error)

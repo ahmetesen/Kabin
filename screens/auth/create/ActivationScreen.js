@@ -36,11 +36,11 @@ export default class ActivationScreen extends React.Component{
     }
     _reloadUser(){
         SpinnerContainer.getInstance().showSpinner();
-        Firebase.getInstance().reloadUserData((user)=>{
-            if(user.emailVerified)
-            SpinnerContainer.getInstance().hideSpinner(()=>{
-                this.props.navigation.navigate('Main');
-            });
+        Firebase.getInstance().reloadUserData(()=>{
+            if(Firebase.getInstance().auth.currentUser.emailVerified)
+                SpinnerContainer.getInstance().hideSpinner(()=>{
+                    this.props.navigation.navigate('Main');
+                });
                 
         },
         (fail)=>{
