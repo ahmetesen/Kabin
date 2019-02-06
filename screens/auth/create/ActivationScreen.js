@@ -41,7 +41,8 @@ export default class ActivationScreen extends React.Component{
                 SpinnerContainer.getInstance().hideSpinner(()=>{
                     this.props.navigation.navigate('Main');
                 });
-                
+            else
+                SpinnerContainer.getInstance().hideSpinner(null);
         },
         (fail)=>{
             this.setState({response:fail});

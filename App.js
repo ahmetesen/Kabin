@@ -13,6 +13,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import {tabHeaderStyle} from './components/styles/global'
 import SpinnerContainer from './components/views/SpinnerContainer';
+import RoomScreen from './screens/ready/RoomScreen';
+import AdScreen from './screens/ready/AdScreen';
 
 class App extends React.Component {
     collectedLoaders=0;
@@ -177,6 +179,12 @@ const LoggedNavigator = createStackNavigator({
     },
     AddFlight:{
         screen:AddFlightScreen
+    },
+    Room:{
+        screen:RoomScreen
+    },
+    Ad:{
+        screen:AdScreen
     }
 },{
     initialRouteName: 'Logged',

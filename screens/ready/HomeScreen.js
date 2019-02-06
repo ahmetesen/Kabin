@@ -26,6 +26,8 @@ export default class HomeScreen extends React.Component {
         super(props);
         this._primaryPressed = this._primaryPressed.bind(this);
         this.state = this._initialState;
+        this.roomsChanged = this.roomsChanged.bind(this);
+        this._itemPress = this._itemPress.bind(this);
     }
 
     componentWillMount(){
@@ -33,6 +35,8 @@ export default class HomeScreen extends React.Component {
         this.getUserData();
     }
     componentDidMount(){
+        this.getUserData();
+        Firebase.getInstance().registerForAllRoomsOfCurrentUser(this.roomsChanged);
         this.subs = [
             this.props.navigation.addListener('willFocus', () => {
                 if(this.added)
@@ -40,6 +44,12 @@ export default class HomeScreen extends React.Component {
                 this.added = false;
             }),
         ];
+    }
+
+    roomsChanged(roomKey,roomVal){
+        var newState = this.state;
+        newState.user.rooms[roomKey] = roomVal;
+        this.setState(newState);
     }
 
     componentWillUnmount(){
@@ -77,6 +87,20 @@ export default class HomeScreen extends React.Component {
         this.added=true;
         this.props.navigation.navigate('AddFlight');
     }
+    _itemPress(key){
+        if(key == 'Z'){
+            //Ad Screen
+            this.props.navigation.navigate('AdScreen');
+        }
+        else if(key == '0'){
+            //Contact Screen
+            this.props.navigation.navigate('Room',{room:key, title:"Kabin İletişim"});
+        }
+        else{
+            //Target Chat Screen
+            this.props.navigation.navigate('Room',{room:key, title: key.split('+')[1]});
+        }
+    }
 
     render() {
         if(!this.state.user)
@@ -85,7 +109,7 @@ export default class HomeScreen extends React.Component {
             var chatRooms = this.state.user.rooms;
             const RoomsContainer = Object.keys(chatRooms).map(key =>{
                 //message = chatRooms[key].lastMessage;
-                return (<RoomListView key={key} title={key} lastMessage={chatRooms[key].lastMessage} timeStamp={chatRooms[key].timeStamp} isAlive={chatRooms[key].isAlive} mustShown={chatRooms[key].mustShown} readYet={chatRooms[key].readYet} image={chatRooms[key].image} ></RoomListView>);
+                return (<RoomListView onItemPress={this._itemPress} key={key} title={key} lastMessage={chatRooms[key].lastMessage} timeStamp={chatRooms[key].timeStamp} isAlive={chatRooms[key].isAlive} mustShown={chatRooms[key].mustShown} readYet={chatRooms[key].readYet} image={chatRooms[key].image} ></RoomListView>);
             });
             RoomsContainer.sort();
             RoomsContainer.reverse();

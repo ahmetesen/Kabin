@@ -10,7 +10,7 @@ import { Feather } from '@expo/vector-icons';
 export default class SettingsScreen extends React.Component {
     static navigationOptions = {
         
-      };
+    };
 
     constructor(props){
         super(props);
