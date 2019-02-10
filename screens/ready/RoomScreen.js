@@ -1,5 +1,5 @@
 import React from 'react';
-import {View,StyleSheet} from 'react-native';
+import {View,StyleSheet, KeyboardAvoidingView, Platform} from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import Firebase from '../../core/Firebase';
 import UsersManager from '../../core/UsersManager';
@@ -41,7 +41,9 @@ export default class RoomScreen extends React.Component {
                         messages:this._messages.slice(0)
                     });
                 })
-            })
+            }).catch((error)=>{
+                console.log(error);
+            });
             Firebase.getInstance().startListenRoom(this._roomData,this.messageIncoming);
         }
     }
@@ -72,16 +74,21 @@ export default class RoomScreen extends React.Component {
 
     componentWillUnmount(){
         Firebase.getInstance().stopListenRoom(this._roomData);
+        Firebase.getInstance().currentUserSeesAllMessage(this._roomData);
     }
 
     _createMessageItem(value,key){
         return new Promise((resolve,reject)=>{
             return UsersManager.instance.getUserName(value.sender).then((name)=>{
+                var sysId = 0;
+                if(this._roomData == "0")
+                    sysId = -1;
+
                 this._messages.push({
                     _id:key,
                     text:value.message,
                     createdAt:new Date(value.messageDate),
-                    system: (value.sender==0)?true:false,
+                    system: (value.sender==sysId)?true:false,
                     user:{
                         name: name,
                         _id:value.sender
@@ -114,6 +121,7 @@ export default class RoomScreen extends React.Component {
                     messages={this.state.messages}
                     user={{_id:this._currentUser}}
                 />
+                <KeyboardAvoidingView behavior={ Platform.OS === 'android' ? 'padding' :  null} keyboardVerticalOffset={80} />
                 </View>
             )
         }

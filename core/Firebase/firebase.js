@@ -118,6 +118,7 @@ export default class Firebase {
         this.saveNewUser = this.funcs.httpsCallable('saveNewUser');
         this.getNameOfUser = this.funcs.httpsCallable('getNameOfUser');
         this.sendNewMessage = this.funcs.httpsCallable('sendNewMessage');
+        this.userSeesMessages = this.funcs.httpsCallable('userSeesMessages');
         Firebase._instance = this;
     }
 
@@ -143,6 +144,9 @@ export default class Firebase {
     }
 
     getAllMessagesOfTheRoom(roomName){
+        if(roomName == '0'){
+            roomName = "bot-"+this.auth.currentUser.uid;
+        }
         return new Promise((resolve,reject)=>{
             this.db.ref('rooms/'+roomName+'/messages').once('value',(snapShot)=>{
                 if(snapShot)
@@ -242,6 +246,9 @@ export default class Firebase {
     }
 
     startListenRoom(roomName, action){
+        if(roomName == '0'){
+            roomName = "bot-"+this.auth.currentUser.uid;
+        }
         this.db.ref('rooms/'+roomName+'/messages').endAt().limitToLast(1).on('child_added',(snapShot)=>{
             if(snapShot){
                 action(snapShot.key,snapShot.val());
@@ -254,8 +261,21 @@ export default class Firebase {
     }
 
     sendMessage(roomName,message){
+        if(roomName == '0'){
+            roomName = "bot-"+this.auth.currentUser.uid;
+        }
         return new Promise((resolve,reject)=>{
             this.sendNewMessage({roomName,message}).then(()=>{
+                return resolve();
+            }).catch((error)=>{
+                return reject(error);
+            })
+        });
+    }
+
+    currentUserSeesAllMessage(roomName){
+        return new Promise((resolve,reject)=>{
+            this.userSeesMessages({roomName}).then(()=>{
                 return resolve();
             }).catch((error)=>{
                 return reject(error);

@@ -48,6 +48,8 @@ export default class HomeScreen extends React.Component {
 
     roomsChanged(roomKey,roomVal){
         var newState = this.state;
+        if(newState.user == null)
+            return;
         newState.user.rooms[roomKey] = roomVal;
         this.setState(newState);
     }

@@ -6,12 +6,12 @@ import TextBlock from '../../components/texts/TextBlock';
 import { tabHeaderStyle } from '../../components/styles/global';
 import TextBox from '../../components/texts/TextBox';
 import { PrimaryButton } from '../../components/buttons';
-import {getCurrentDay,getNextYear, tickToDate} from '../../helpers/DateHelper'
+import {getCurrentDay,getNextYear, getNextMonth, tickToDate} from '../../helpers/DateHelper'
 import Firebase from '../../core/Firebase';
 import SpinnerContainer from '../../components/views/SpinnerContainer';
 
 const currentDate = getCurrentDay();
-const maxDate = getNextYear();
+const maxDate = getNextMonth();
 export default class AddFlightScreen extends React.Component{
     
     static navigationOptions={
@@ -94,7 +94,7 @@ export default class AddFlightScreen extends React.Component{
     }
 
     _onSubmit(event){
-        this.secondTextInput.focus();
+        this.secondTextInput.onPressDate();
     }
 
     render(){

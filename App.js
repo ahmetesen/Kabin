@@ -151,9 +151,9 @@ const SettingsStack = createStackNavigator(
 
 const LoggedTab = createBottomTabNavigator(
     {
-        Profile: {
+        /*Profile: {
             screen:ProfileStack,
-        },
+        },*/
         Home: {
             screen:HomeStack,
         },

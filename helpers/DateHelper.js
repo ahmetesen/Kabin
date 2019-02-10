@@ -14,8 +14,22 @@ const getNextYear = ()=>{
     return returnstring;
 }
 
+const getNextMonth = ()=>{
+    var nextMonth = 0;
+    if(month == 12){
+        var nextMonth = 0;
+        var nextYear = year + 1;
+        var returnstring = day +"/"+nextMonth+"/"+nextYear;
+    }
+    else{
+        var nextMonth = month +1;
+        var returnstring = day +"/"+nextMonth+"/"+year;
+    }
+    return returnstring;
+}
+
 const tickToDate = (str)=>{
     return Date.parse(str);
 }
 
-export {getCurrentDay, getNextYear, tickToDate};
+export {getCurrentDay, getNextYear, getNextMonth, tickToDate};
