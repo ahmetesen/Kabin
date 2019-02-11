@@ -119,6 +119,7 @@ export default class Firebase {
         this.getNameOfUser = this.funcs.httpsCallable('getNameOfUser');
         this.sendNewMessage = this.funcs.httpsCallable('sendNewMessage');
         this.userSeesMessages = this.funcs.httpsCallable('userSeesMessages');
+        this.getAdDetails = this.funcs.httpsCallable('getAdDetails');
         Firebase._instance = this;
     }
 
@@ -281,6 +282,16 @@ export default class Firebase {
                 return reject(error);
             })
         });
+    }
+
+    getActiveAdDetails(adId){
+        return new Promise((resolve,reject)=>{
+            this.getAdDetails({adId}).then((response)=>{
+                return resolve(response.data.ad);
+            }).catch((error)=>{
+                return reject(error);
+            });
+        })
     }
 
     logOut(success,fail){

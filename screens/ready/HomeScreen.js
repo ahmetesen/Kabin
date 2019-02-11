@@ -92,7 +92,7 @@ export default class HomeScreen extends React.Component {
     _itemPress(key){
         if(key == 'Z'){
             //Ad Screen
-            this.props.navigation.navigate('AdScreen');
+            this.props.navigation.navigate('Ad',{id:this._adId});
         }
         else if(key == '0'){
             //Contact Screen
@@ -104,11 +104,14 @@ export default class HomeScreen extends React.Component {
         }
     }
 
+    _adId = 0;
+
     render() {
         if(!this.state.user)
             return null;
         else{
             var chatRooms = this.state.user.rooms;
+            _adId = chatRooms['Z'].adId;
             const RoomsContainer = Object.keys(chatRooms).map(key =>{
                 //message = chatRooms[key].lastMessage;
                 return (<RoomListView onItemPress={this._itemPress} key={key} title={key} lastMessage={chatRooms[key].lastMessage} timeStamp={chatRooms[key].timeStamp} isAlive={chatRooms[key].isAlive} mustShown={chatRooms[key].mustShown} readYet={chatRooms[key].readYet} image={chatRooms[key].image} ></RoomListView>);
