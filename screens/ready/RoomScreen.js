@@ -3,6 +3,7 @@ import {View,StyleSheet, KeyboardAvoidingView, Platform} from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import Firebase from '../../core/Firebase';
 import UsersManager from '../../core/UsersManager';
+import SpinnerContainer from '../../components/views/SpinnerContainer';
 export default class RoomScreen extends React.Component {
     static navigationOptions = ({navigation})=>({
         title: `${navigation.state.params.title}`
@@ -27,22 +28,28 @@ export default class RoomScreen extends React.Component {
     componentWillMount(){
         this._roomData = this.props.navigation.getParam('room',undefined);
         if(this._roomData){
+            SpinnerContainer.getInstance().showSpinner();
             Firebase.getInstance().getAllMessagesOfTheRoom(this._roomData).then((messages)=>{
                 var promises = [];
                 messages.forEach((message)=>{
                     promises.push(this._createMessageItem(message,messages.indexOf(message)));
                 });
                 Promise.all(promises).then(()=>{
-                    this._messages.sort(function(a, b) {
-                        return b._id - a._id;
-                    });
-                    this.setState({
-                        loading:false,
-                        messages:this._messages.slice(0)
+                    SpinnerContainer.getInstance().hideSpinner(()=>{
+                        this._messages.sort(function(a, b) {
+                            return b._id - a._id;
+                        });
+                        this.setState({
+                            loading:false,
+                            messages:this._messages.slice(0)
+                        });
+    
                     });
                 })
             }).catch((error)=>{
-                console.log(error);
+                SpinnerContainer.getInstance().hideSpinner(()=>{
+                    console.log(error);
+                });
             });
             Firebase.getInstance().startListenRoom(this._roomData,this.messageIncoming);
         }
