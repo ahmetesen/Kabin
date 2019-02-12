@@ -92,7 +92,7 @@ export default class HomeScreen extends React.Component {
     _itemPress(key){
         if(key == 'Z'){
             //Ad Screen
-            this.props.navigation.navigate('Ad',{id:this._adId});
+            this.props.navigation.navigate('Ad',{id:this._adId, title: 'Reklam'});
         }
         else if(key == '0'){
             //Contact Screen
