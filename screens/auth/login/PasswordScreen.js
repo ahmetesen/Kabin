@@ -9,7 +9,7 @@ import SecondaryButton from '../../../components/buttons/SecondaryButton';
 import {styles} from '../create/style';
 import Firebase from '../../../core/Firebase';
 import LinkButton from '../../../components/buttons/LinkButton';
-export default class CreatePasswordScreen extends React.Component{
+export default class PassworScreen extends React.Component{
     _initialState={
         name:'',
         email:'',

@@ -67,7 +67,6 @@ export default class CreateEmailScreen extends React.Component{
                             <TextBox
                                 onChangeText={this._onMailTextChange}
                                 onSubmitEditing={this._onSubmit}
-                                value={this.state.email}
                                 errorMessage={this.state.errorMessage}
                                 returnKeyType="next"
                                 autoFocus={true}

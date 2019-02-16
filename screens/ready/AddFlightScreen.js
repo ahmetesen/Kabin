@@ -30,6 +30,7 @@ export default class AddFlightScreen extends React.Component{
     }
 
     _checkFlightCode(code){
+        code = code.toUpperCase();
         if(!code.startsWith('TK'))
             return null;
         var justCode = code.slice(2);
@@ -66,7 +67,7 @@ export default class AddFlightScreen extends React.Component{
             },
             (error)=>{
                 SpinnerContainer.getInstance().hideSpinner(()=>{
-                    
+                    //TODO: Log Error And Send to Server
                 });
             });
         }
@@ -90,7 +91,7 @@ export default class AddFlightScreen extends React.Component{
     }
 
     _onFlightCodeTextChange(value){
-        this.setState({flightCode:value.toUpperCase()});
+        this.setState({flightCode:value});
     }
 
     _onSubmit(event){

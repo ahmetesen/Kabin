@@ -15,14 +15,15 @@ export default class PrimaryButton extends React.Component{
 
     render(){
         return(
-            <Button onPress={this._onPress} title={this.props.title} titleStyle={styles.title} props={this.props} buttonStyle={styles.button}>
-                {this.props.children}
-            </Button>
+            <Button type='clear' containerStyle={styles.container} onPress={this._onPress} title={this.props.title} titleStyle={styles.title} props={this.props} buttonStyle={styles.button} />
         )
     }
 }
 
 const styles = StyleSheet.create({
+    container:{
+        backgroundColor:'#FF3545',
+    },
     button:{
         backgroundColor: '#FF3545',
         borderRadius:4,

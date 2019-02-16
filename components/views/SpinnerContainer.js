@@ -6,17 +6,17 @@ export default class SpinnerContainer extends React.Component{
         visible:false
     }
     _counter = 0;
-    static _instance;
+    static _spinnerInstance;
     constructor(props){
         super(props);
         this.showSpinner = this.showSpinner.bind(this);
         this.hideSpinner = this.hideSpinner.bind(this);
-        _instance=this;
+        _spinnerInstance=this;
     }
 
     static getInstance(){
-        if(_instance)
-            return _instance;
+        if(_spinnerInstance)
+            return _spinnerInstance;
     }
 
     _fadeIn= Animated.timing(

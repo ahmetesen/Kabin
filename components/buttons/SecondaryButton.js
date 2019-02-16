@@ -26,7 +26,8 @@ const styles = StyleSheet.create({
     button:{
         backgroundColor: 'transparent',
         margin:8,
-        padding:8
+        padding:8,
+        elevation:0
     },
     title:{
         fontFamily:'nunito-semibold',

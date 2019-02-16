@@ -27,7 +27,7 @@ export default class CreateEmailScreen extends React.Component{
         this.setState({name:name});
     }
     _onMailTextChange(value){
-        this.setState({email:value.toLowerCase(),errorMessage:""});
+        this.setState({email:value,errorMessage:""});
 
     }
     _validateEmail(){

@@ -15,6 +15,7 @@ import {tabHeaderStyle} from './components/styles/global'
 import SpinnerContainer from './components/views/SpinnerContainer';
 import RoomScreen from './screens/ready/RoomScreen';
 import AdScreen from './screens/ready/AdScreen';
+import PushSheet from './components/views/PushSheet';
 
 class App extends React.Component {
     collectedLoaders=0;
@@ -213,6 +214,7 @@ export default class TopView extends React.Component{
             <View style={{flex:1}}>
                 <AppContainer/>
                 <SpinnerContainer/>
+                <PushSheet/>
             </View>
         )
     }

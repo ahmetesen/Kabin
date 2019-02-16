@@ -31,26 +31,24 @@ export default class AdScreen extends React.Component {
         SpinnerContainer.getInstance().showSpinner();
         var adId = this.props.navigation.getParam('id',undefined);
         Firebase.getInstance().getActiveAdDetails(adId).then((ad)=>{
-            this.setState({...ad, loaded:true});
+            this.setState({...ad, loaded:true, adId:adId});
         }).catch((error)=>{
 
         });
     }
 
     _imageLoaded(event){
-        console.log(event);
     }
 
     _imageLoadEnd(event){
         SpinnerContainer.getInstance().hideSpinner(null);
-        console.log(event);
     }
 
     _imageLoadStart(event){
-        console.log(event);
     }
 
     async _primaryPressed(event){
+        Firebase.getInstance().setAdClick(this.state.adId);
         target = Platform.OS==='ios'?this.state.iOSClick:this.state.androidClick;
         if(this.state.type === 'share'){
             Share.share({

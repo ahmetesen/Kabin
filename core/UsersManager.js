@@ -1,12 +1,12 @@
 import Firebase from "./Firebase";
 
 export default class UsersManager{
-    _instantiated = false;
+    static INSTANTIATED = false;
     constructor(){
         
-        if(!this._instantiated){
+        if(!UsersManager.INSTANTIATED){
             this.version=0;
-            this._instantiated=true;
+            UsersManager.INSTANTIATED=true;
         }
         else
             throw new Error("You cannot create instance via constructor.");

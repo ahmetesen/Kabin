@@ -3,6 +3,7 @@ import 'firebase/auth';
 import 'firebase/database';
 import 'firebase/functions';
 import {TEST_PASSWORD} from '../../constants/global-strings';
+import PushSheet from '../../components/views/PushSheet';
 
 const signInWithEmailAndPasswordErrors = {
     "auth/invalid-email":"E-posta adresinde bir hata var. Kontrol eder misin?",
@@ -88,6 +89,7 @@ const prodConfig = {
   };
 
 export default class Firebase {
+    _lastSentMessage = "";
     activeUser=null;
     static _instance;
     _initializeCompletedAction = null;
@@ -120,6 +122,7 @@ export default class Firebase {
         this.sendNewMessage = this.funcs.httpsCallable('sendNewMessage');
         this.userSeesMessages = this.funcs.httpsCallable('userSeesMessages');
         this.getAdDetails = this.funcs.httpsCallable('getAdDetails');
+        this.adClick = this.funcs.httpsCallable('adClick');
         Firebase._instance = this;
     }
 
@@ -241,7 +244,15 @@ export default class Firebase {
     registerForAllRoomsOfCurrentUser(action){
         this.db.ref('users/'+this.auth.currentUser.uid+'/rooms').on('child_changed',(snapShot)=>{
             if(snapShot){
-                action(snapShot.key,snapShot.val());
+                var value = snapShot.val();
+                action(snapShot.key,value);
+                if(value.readYet === true)
+                    return;
+                var message = value.lastMessage;
+                if(message === Firebase.getInstance()._lastSentMessage)
+                    return;
+                var title = snapShot.key.split('+')[1];
+                PushSheet.getInstance().showSheet(title+" - "+message);
             }
         });
     }
@@ -261,14 +272,18 @@ export default class Firebase {
         this.db.ref('rooms/'+roomName+'/messages').off('child_added');
     }
 
+
+
     sendMessage(roomName,message){
         if(roomName == '0'){
             roomName = "bot-"+this.auth.currentUser.uid;
         }
         return new Promise((resolve,reject)=>{
+            Firebase.getInstance()._lastSentMessage = message;
             this.sendNewMessage({roomName,message}).then(()=>{
                 return resolve();
             }).catch((error)=>{
+                Firebase.getInstance()._lastSentMessage="";
                 return reject(error);
             })
         });
@@ -292,6 +307,16 @@ export default class Firebase {
                 return reject(error);
             });
         })
+    }
+
+    setAdClick(adId){
+        return new Promise((resolve,reject)=>{
+            this.adClick({adId}).then(()=>{
+                return resolve();
+            }).catch((error)=>{
+                return reject(error);
+            });
+        });
     }
 
     logOut(success,fail){
