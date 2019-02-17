@@ -1,5 +1,5 @@
 import React from 'react';
-import {AppLoading, Asset, Font, Icon} from 'expo';
+import {AppLoading, Asset, Font, Icon, Notifications} from 'expo';
 import {View} from 'react-native';
 import {Button, createAppContainer, createStackNavigator, createSwitchNavigator, createBottomTabNavigator} from 'react-navigation';
 import {ActivationScreen,CreateEmailScreen,NameScreen, CreatePasswordScreen} from './screens/auth/create';
@@ -24,6 +24,15 @@ class App extends React.Component {
         super(props);
         this._handleFinishLoading = this._handleFinishLoading.bind(this);
     }
+
+    componentDidMount(){
+        this._notificationSubscription = Notifications.addListener(this._handleNotification);
+    }
+
+    _handleNotification = (notification)=>{
+        console.log("handled");
+    };
+
     componentWillMount(){
         Firebase.initializeApp();
         checkStateChangedAndUnsubscribe = Firebase.getInstance().auth.onAuthStateChanged((user)=>{
@@ -34,6 +43,7 @@ class App extends React.Component {
             this.loaderCollected();
         });
     }
+
     loaderCollected(){
         if(this.collectedLoaders>0)
         {

@@ -8,6 +8,7 @@ import TabNavContainer from '../../components/views/TabNavContainer';
 import SpinnerContainer from '../../components/views/SpinnerContainer';
 import Firebase from '../../core/Firebase';
 import RoomListView from '../../components/views/RoomListView';
+import PushSheet from '../../components/views/PushSheet';
 
 export default class HomeScreen extends React.Component {
     _initialState = {
@@ -32,10 +33,9 @@ export default class HomeScreen extends React.Component {
 
     componentWillMount(){
         this.props.navigation.setParams({ _primaryPressed: this._primaryPressed });
-        this.getUserData();
     }
-    componentDidMount(){
-        this.getUserData();
+    async componentDidMount(){
+        await this.getUserData();
         Firebase.getInstance().registerForAllRoomsOfCurrentUser(this.roomsChanged);
         this.subs = [
             this.props.navigation.addListener('willFocus', () => {
@@ -58,9 +58,9 @@ export default class HomeScreen extends React.Component {
         this.subs.forEach(sub => sub.remove());
     }
 
-    getUserData(){
+    async getUserData(){
         SpinnerContainer.getInstance().showSpinner();
-        Firebase.getInstance().getUser((user)=>{
+        await Firebase.getInstance().getUser((user)=>{
             SpinnerContainer.getInstance().hideSpinner(()=>{
                 Firebase.getInstance().activeUser = user;
                 this.setState({user:user});
@@ -74,8 +74,8 @@ export default class HomeScreen extends React.Component {
                 [
                     {
                         text:'Tekrar dene', 
-                        onPress:()=>{
-                            this.getUserData();
+                        onPress:async ()=>{
+                            await this.getUserData();
                         }
                     }
                 ],{
@@ -124,8 +124,8 @@ export default class HomeScreen extends React.Component {
                         {RoomsContainer}
                     </View>
                     <View style={{marginTop:16,justifyContent:'center', alignItems:'center'}}>
-                        <TextBlock dark>Bir sonraki uçuşunu ekle{'\n'}ve uçuş kabinine katıl...</TextBlock>
-                        <PrimaryButton title="Uçuş Ekle" onPress={this._primaryPressed}/>
+                        <TextBlock style={{marginBottom:16}} dark>Bir sonraki uçuşunu ekle{'\n'}ve uçuş kabinine katıl...</TextBlock>
+                        <PrimaryButton style={{margin:16}} title="Uçuş Ekle" onPress={this._primaryPressed}/>
                     </View>
                 </TabNavContainer>
             );

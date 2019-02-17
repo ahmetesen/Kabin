@@ -100,7 +100,7 @@ export default class AddFlightScreen extends React.Component{
 
     render(){
         return(
-            <KeyboardAvoidingView style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+            <KeyboardAvoidingView style={{flex:1, justifyContent:'center', alignItems:'center', padding:16}}>
                 <TextBlock dark>Eklemek istediğin uçuşun kodunu ve tarih bilgilerini girer misin?</TextBlock>
                 <View style={{width:196}}>
                     <TextBox dark

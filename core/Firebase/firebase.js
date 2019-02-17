@@ -4,6 +4,7 @@ import 'firebase/database';
 import 'firebase/functions';
 import {TEST_PASSWORD} from '../../constants/global-strings';
 import PushSheet from '../../components/views/PushSheet';
+import { Permissions, Notifications } from 'expo';
 
 const signInWithEmailAndPasswordErrors = {
     "auth/invalid-email":"E-posta adresinde bir hata var. Kontrol eder misin?",
@@ -39,9 +40,11 @@ const updateProfileErrors = {
 const reloadUserDataErrors = {
     "other":"Kullanıcı bilgisi getirilirken bir hata oluştu :("
 };
+
 const passwordResetErrors = {
     "other":"Parola sıfırlama maili sırasında bir hata oluştu :("
 };
+
 const logOutErrors = {
     "other":"Çıkış sırasında bir hata oluştu :("
 };
@@ -111,7 +114,7 @@ export default class Firebase {
             Firebase._instance = new Firebase();        
     }
 
-    refreshAllFbInstances(){
+    async refreshAllFbInstances(){
         this.auth = app.auth();
         this.funcs = app.functions();
         this.db = app.database();
@@ -123,6 +126,7 @@ export default class Firebase {
         this.userSeesMessages = this.funcs.httpsCallable('userSeesMessages');
         this.getAdDetails = this.funcs.httpsCallable('getAdDetails');
         this.adClick = this.funcs.httpsCallable('adClick');
+        this.setPushToken = this.funcs.httpsCallable('setPushToken');
         Firebase._instance = this;
     }
 
@@ -172,11 +176,15 @@ export default class Firebase {
         });
     }
 
-    getUser(success,fail){
+    async getUser(success,fail){
+        await this.registerForPushNotificationsAsync();
         var displayName = this.auth.currentUser.displayName;
-        this.saveNewUser({displayName}).then((result)=>{
+        this.saveNewUser({displayName,token:this._pushToken}).then((result)=>{
             if(result)
+            {
+                this._userPushToken = result.data.user.token;
                 success(result.data.user);
+            }
         }).catch((error)=>{
             if(error)
                 if(error.error)
@@ -187,7 +195,6 @@ export default class Firebase {
     }
 
     checkUserIsAlreadyExist(email,success,fail){
-
         return this.auth.signInWithEmailAndPassword(email,TEST_PASSWORD).then(
             (response)=>{
                 let errorText = firebaseErrors.signInWithEmailAndPassword.restrictedPassword;
@@ -272,8 +279,6 @@ export default class Firebase {
         this.db.ref('rooms/'+roomName+'/messages').off('child_added');
     }
 
-
-
     sendMessage(roomName,message){
         if(roomName == '0'){
             roomName = "bot-"+this.auth.currentUser.uid;
@@ -345,5 +350,34 @@ export default class Firebase {
     {
         throw new Error(new Date().toString()+" - error:"+log);
         //TODO: post all errors
+    }
+
+    _pushToken = "";
+    _userPushToken="";
+    async registerForPushNotificationsAsync() {
+        const { status: existingStatus } = await Permissions.getAsync(
+            Permissions.NOTIFICATIONS
+        );
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+            const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+            finalStatus = status;
+        }
+        if (finalStatus !== 'granted') {
+            return;
+        }
+        Firebase.getInstance()._pushToken = await Notifications.getExpoPushTokenAsync();
+    }
+
+    sendPushToken(){
+        if(this._pushToken!=="" && this._pushToken !== this._userPushToken){
+            return new Promise((resolve,reject)=>{
+                this.setPushToken({token:this._pushToken}).then(()=>{
+                    return resolve();
+                }).catch((error)=>{
+                    return reject(error);
+                });
+            });
+        }
     }
 }
