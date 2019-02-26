@@ -16,6 +16,7 @@ export default class TabNavContainer extends React.Component{
 
 const styles = StyleSheet.create({
     containerStyle:{
-        padding:0
+        padding:0,
+        paddingBottom:24
     }
 })

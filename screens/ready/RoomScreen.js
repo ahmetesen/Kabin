@@ -1,5 +1,5 @@
 import React from 'react';
-import {View,StyleSheet, KeyboardAvoidingView, Platform} from 'react-native';
+import {View, KeyboardAvoidingView, Platform} from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import Firebase from '../../core/Firebase';
 import UsersManager from '../../core/UsersManager';

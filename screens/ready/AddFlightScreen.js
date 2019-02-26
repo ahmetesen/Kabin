@@ -1,12 +1,11 @@
 import React from 'react';
-import { View, Alert, KeyboardAvoidingView } from 'react-native';
+import { View, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import DatePicker from 'react-native-datepicker';
-import TabNavContainer from '../../components/views/TabNavContainer';
 import TextBlock from '../../components/texts/TextBlock';
 import { tabHeaderStyle } from '../../components/styles/global';
 import TextBox from '../../components/texts/TextBox';
 import { PrimaryButton } from '../../components/buttons';
-import {getCurrentDay,getNextYear, getNextMonth, tickToDate} from '../../helpers/DateHelper'
+import {getCurrentDay, getNextMonth} from '../../helpers/DateHelper'
 import Firebase from '../../core/Firebase';
 import SpinnerContainer from '../../components/views/SpinnerContainer';
 
@@ -100,8 +99,9 @@ export default class AddFlightScreen extends React.Component{
 
     render(){
         return(
-            <KeyboardAvoidingView style={{flex:1, justifyContent:'center', alignItems:'center', padding:16}}>
-                <TextBlock dark>Eklemek istediğin uçuşun kodunu ve tarih bilgilerini girer misin?</TextBlock>
+            <View style={{flex:1}}>
+            <KeyboardAvoidingView behavior={ Platform.OS === 'android' ? 'padding' :  'padding'} style={{flex:1, justifyContent:'flex-start', alignItems:'center', padding:16}}>
+                <TextBlock dark style={{padding:16}}>Eklemek istediğin uçuşun kodunu ve GMT cinsinden uçuş tarihini girer misin?</TextBlock>
                 <View style={{width:196}}>
                     <TextBox dark
                         maxLength={6}
@@ -114,12 +114,14 @@ export default class AddFlightScreen extends React.Component{
                         shake={true}
                         placeholder='Uçuş Kodun Nedir?'
                         blurOnSubmit={false}
+                        style={{paddingVertical:24}}
                     />
                 </View>
                 <DatePicker
                     ref={(input) => { this.secondTextInput = input; }}
-                    style={{width:200}}
+                    style={{width:200,paddingVertical:24}}
                     date={this.state.date}
+                    showIcon={false}
                     mode="date"
                     locale="tr-TR"
                     placeholder="Tarih seç"
@@ -129,12 +131,6 @@ export default class AddFlightScreen extends React.Component{
                     confirmBtnText="Seç"
                     cancelBtnText="İptal"
                     customStyles={{
-                    dateIcon: {
-                        position: 'absolute',
-                        left: 0,
-                        top: 4,
-                        marginLeft: 0
-                    },
                     dateInput: {
                         marginLeft: 36
                     }
@@ -152,6 +148,7 @@ export default class AddFlightScreen extends React.Component{
                 />
                 <PrimaryButton title="Uçuş Ekle" onPress={this._primaryPressed}></PrimaryButton>
             </KeyboardAvoidingView>
+            </View>
         );
     }
 }

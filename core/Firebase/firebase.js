@@ -354,6 +354,7 @@ export default class Firebase {
 
     _pushToken = "";
     _userPushToken="";
+
     async registerForPushNotificationsAsync() {
         const { status: existingStatus } = await Permissions.getAsync(
             Permissions.NOTIFICATIONS
@@ -366,7 +367,11 @@ export default class Firebase {
         if (finalStatus !== 'granted') {
             return;
         }
-        Firebase.getInstance()._pushToken = await Notifications.getExpoPushTokenAsync();
+
+        await Notifications.getExpoPushTokenAsync().then((data)=>{
+            Firebase.getInstance()._pushToken = data;
+        }).catch((error)=>{
+        });
     }
 
     sendPushToken(){

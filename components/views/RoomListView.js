@@ -2,6 +2,7 @@ import React from 'react';
 import {View, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import TextBlock from '../texts/TextBlock';
+import {msToDate} from '../../helpers/DateHelper'
 
 export default class RoomListView extends React.Component{
 
@@ -29,13 +30,25 @@ export default class RoomListView extends React.Component{
         // if(!this.props.mustShown)
         //     return null;
         var title="";
-        if(this.props.title == 'Z')
+        var bulkDate;
+        var date = "Son mesaj: ";
+        if(this.props.title == 'Z'){
             title = "Reklam";
-        else if(this.props.title == 0)
-            title = "Kabin İletişim"
-        else{
-            title = this.props.title.split('+')[1];
+            bulkDate = this.props.timeStamp;
         }
+        else if(this.props.title == 0){
+            bulkDate = this.props.timeStamp;
+            title = "Kabin İletişim";
+        }
+        else{
+            var data = this.props.title.split('+');
+            bulkDate = data[0];
+            title = data[1];
+            date = "Uçuş tarihi: "
+        }
+
+        date += msToDate(bulkDate);
+
         return(
             <View style={{flex:1}}>
                 <TouchableWithoutFeedback onPress={this._onPress} >
@@ -51,7 +64,7 @@ export default class RoomListView extends React.Component{
                                         numberOfLines={1} >{title}</TextBlock>
                                 </View>
                                 <View style={{ flex:.5, justifyContent:'center', alignItems:'flex-end'}}>
-                                    <TextBlock low numberOfLines={0}>{this.props.timeStamp}</TextBlock>
+                                    <TextBlock low numberOfLines={0}>{date}</TextBlock>
                                 </View>
                             </View>
                             <View style={{flex:.5, justifyContent:'center'}}>

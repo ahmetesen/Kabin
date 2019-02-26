@@ -8,9 +8,10 @@
       "ios",
       "android"
     ],
-    "version": "1.0.0",
+    "scheme": "kabin",
+    "primaryColor": "#283AD8",
+    "version": "1.0.3",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "cover",
@@ -23,10 +24,14 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.aee.kabin",
+      "supportsTablet": false,
+      "icon": "./assets/images/ios/icon.png"
     },
     "android": {
-      "googleServicesFile": "./google-services.json"
+      "package": "com.aee.kabin",
+      "googleServicesFile": "./google-services.json",
+      "icon": "./assets/images/icon.png"
     },
     "description": ""
   }

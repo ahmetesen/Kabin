@@ -3,13 +3,10 @@ import {View, Alert, ScrollView} from 'react-native';
 import TextBlock from '../../components/texts/TextBlock';
 import {PrimaryButton} from '../../components/buttons'
 import { Ionicons } from '@expo/vector-icons';
-import {Profile} from '../../components/icons/icons';
 import TabNavContainer from '../../components/views/TabNavContainer';
 import SpinnerContainer from '../../components/views/SpinnerContainer';
 import Firebase from '../../core/Firebase';
 import RoomListView from '../../components/views/RoomListView';
-import PushSheet from '../../components/views/PushSheet';
-
 export default class HomeScreen extends React.Component {
     _initialState = {
         user:null
@@ -123,7 +120,7 @@ export default class HomeScreen extends React.Component {
                     <View style={{marginTop:4}}>
                         {RoomsContainer}
                     </View>
-                    <View style={{marginTop:16,justifyContent:'center', alignItems:'center'}}>
+                    <View style={{marginTop:16, justifyContent:'center', alignItems:'center'}}>
                         <TextBlock style={{marginBottom:16}} dark>Bir sonraki uçuşunu ekle{'\n'}ve uçuş kabinine katıl...</TextBlock>
                         <PrimaryButton style={{margin:16}} title="Uçuş Ekle" onPress={this._primaryPressed}/>
                     </View>

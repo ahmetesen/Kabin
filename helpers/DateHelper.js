@@ -28,8 +28,12 @@ const getNextMonth = ()=>{
     return returnstring;
 }
 
-const tickToDate = (str)=>{
-    return Date.parse(str);
+const msToDate = (ms)=>{
+    var bulkDate = new Date(Number(ms));    
+    var day = bulkDate.getDate();
+    var month = bulkDate.getMonth()+1;
+    var year = bulkDate.getFullYear();
+    return day+"."+month+"."+year;
 }
 
-export {getCurrentDay, getNextYear, getNextMonth, tickToDate};
+export {getCurrentDay, getNextYear, getNextMonth, msToDate};

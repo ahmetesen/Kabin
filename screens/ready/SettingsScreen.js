@@ -3,10 +3,7 @@ import { View } from 'react-native';
 import PrimaryButton from '../../components/buttons/PrimaryButton';
 import Firebase from '../../core/Firebase';
 import SpinnerContainer from '../../components/views/SpinnerContainer';
-import { StackActions, NavigationActions } from 'react-navigation';
-import { Feather } from '@expo/vector-icons';
-
-
+import TextBlock from '../../components/texts/TextBlock';
 export default class SettingsScreen extends React.Component {
     static navigationOptions = {
         
@@ -31,7 +28,8 @@ export default class SettingsScreen extends React.Component {
         /* Go ahead and delete ExpoConfigView and replace it with your
         * content, we just wanted to give you a quick view of your config */
         return(
-            <View style={{flex:1, justifyContent:'flex-end', alignItems:'center'}}>
+            <View style={{flex:1, justifyContent:'flex-end', alignItems:'center', paddingBottom:24}}>
+                <TextBlock dark low style={{marginBottom:12}}>İçerik: v3</TextBlock>
                 <PrimaryButton title="Çıkış Yap" onPress={this._primaryPress} />
             </View>
         );

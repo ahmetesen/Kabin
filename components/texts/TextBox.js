@@ -6,10 +6,15 @@ export default class TextBox extends React.Component{
     constructor(props){
         super(props);
     }
+
+    focus(){
+        this.textInput.focus();
+    }
     
     render(){
         return(
             <Input
+                ref={(input) => { this.textInput = input; }}
                 style={[styles.componentStyle,this.props.style]}
                 selectionColor={this.props.dark?'#333333':'#f9f9f9'}
                 containerStyle={styles.containerStyle}
