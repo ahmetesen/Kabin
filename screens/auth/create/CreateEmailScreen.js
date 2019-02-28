@@ -9,6 +9,8 @@ import SecondaryButton from '../../../components/buttons/SecondaryButton';
 import {styles} from './style';
 import Firebase from '../../../core/Firebase';
 import { StackActions, NavigationActions } from 'react-navigation';
+import { LinkButton } from '../../../components/buttons';
+import WebModalContainer from '../../../components/views/WebModalContainer';
 export default class CreateEmailScreen extends React.Component{
     _initialState={
         name:'',
@@ -21,6 +23,7 @@ export default class CreateEmailScreen extends React.Component{
         this._onMailTextChange = this._onMailTextChange.bind(this);
         this._onSubmit = this._onSubmit.bind(this);
         this._secondaryPress = this._secondaryPress.bind(this);
+        this._eulaClick = this._eulaClick.bind(this);
     }
     componentWillMount(){
         name = this.props.navigation.getParam('name','Misafir');
@@ -76,6 +79,12 @@ export default class CreateEmailScreen extends React.Component{
     _secondaryPress(event){
         this.props.navigation.navigate('Email');
     }
+
+    _eulaClick(event){
+        WebModalContainer.getInstance().openModal('https://kabinapp.firebaseapp.com/gizlilik.html');
+        SpinnerContainer.getInstance().showSpinner();
+    }
+
     render(){
         return(
             <GradientContainer>
@@ -96,8 +105,11 @@ export default class CreateEmailScreen extends React.Component{
                                 returnKeyType="next"
                                 autoFocus={true}
                                 shake={true}
-                                placeholder='Eposta adresin nedir?'
+                                placeholder='E-posta adresin nedir?'
                             />
+                        </View>
+                        <View>
+                            <LinkButton title="Devam ederek, kullanıcı sözleşmesini kabul etmiş sayılırsınız." onPress={this._eulaClick}></LinkButton>
                         </View>
                         <View style={styles.infoContainer}>
                             <TextBlock small>*Şimdilik yalnızca THY personellerini kabul edebiliyoruz. </TextBlock>

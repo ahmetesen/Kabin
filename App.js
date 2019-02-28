@@ -8,14 +8,13 @@ import {HomeScreen, ProfileScreen, SettingsScreen, AddFlightScreen } from './scr
 import ErrorManager from './core/ErrorManager';
 import LandingScreen from './screens/LandingScreen';
 import Firebase from './core/Firebase';
-import {FontAwesome} from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-import { Feather } from '@expo/vector-icons';
+import {FontAwesome, Ionicons, Feather} from '@expo/vector-icons';
 import {tabHeaderStyle} from './components/styles/global'
 import SpinnerContainer from './components/views/SpinnerContainer';
 import RoomScreen from './screens/ready/RoomScreen';
 import AdScreen from './screens/ready/AdScreen';
 import PushSheet from './components/views/PushSheet';
+import WebModalContainer from './components/views/WebModalContainer';
 
 class App extends React.Component {
     collectedLoaders=0;
@@ -225,6 +224,7 @@ export default class TopView extends React.Component{
                 <AppContainer/>
                 <SpinnerContainer/>
                 <PushSheet/>
+                <WebModalContainer/>
             </View>
         )
     }

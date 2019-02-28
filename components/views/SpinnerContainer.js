@@ -53,7 +53,7 @@ export default class SpinnerContainer extends React.Component{
             });
         }
         else if(this._counter<0){
-            throw new Error("Bir hata oluştu. Hata kodu: 1001");
+            //throw new Error("Bir hata oluştu. Hata kodu: 1001");
         }
 
     }
