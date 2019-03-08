@@ -127,6 +127,7 @@ export default class Firebase {
         this.getAdDetails = this.funcs.httpsCallable('getAdDetails');
         this.adClick = this.funcs.httpsCallable('adClick');
         this.setPushToken = this.funcs.httpsCallable('setPushToken');
+        this.deleteMessage = this.funcs.httpsCallable('deleteMessage');
         Firebase._instance = this;
     }
 
@@ -289,6 +290,22 @@ export default class Firebase {
                 return resolve();
             }).catch((error)=>{
                 Firebase.getInstance()._lastSentMessage="";
+                return reject(error);
+            })
+        });
+    }
+
+    deleteMessageFromList(roomName, messageId){
+        return new Promise((resolve,reject)=>{
+            if(roomName == '0')
+                roomName = "bot-"+this.auth.currentUser.uid;
+            this.deleteMessage({
+                uid:this.auth.currentUser.uid,
+                messageId: messageId,
+                roomName: roomName
+            }).then((data)=>{
+                return resolve();
+            }).catch((error)=>{
                 return reject(error);
             })
         });

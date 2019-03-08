@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, KeyboardAvoidingView, Platform} from 'react-native';
+import {View, KeyboardAvoidingView, Platform, Clipboard} from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import Firebase from '../../core/Firebase';
 import UsersManager from '../../core/UsersManager';
@@ -21,6 +21,7 @@ export default class RoomScreen extends React.Component {
         this.sendPressed = this.sendPressed.bind(this);
         this.messageIncoming = this.messageIncoming.bind(this);
         this._currentUser = Firebase.getInstance().auth.currentUser.uid;
+        this._longPress = this._longPress.bind(this);
     }
 
     _messages = [];
@@ -76,7 +77,7 @@ export default class RoomScreen extends React.Component {
                     }),
                 };
             });
-        })
+        });
     }
 
     componentWillUnmount(){
@@ -90,6 +91,11 @@ export default class RoomScreen extends React.Component {
                 var sysId = 0;
                 if(this._roomData == "0")
                     sysId = -1;
+
+                if(value.hiddenFrom && value.hiddenFrom == this._currentUser)
+                    return resolve();
+
+                //TODO: user eğer chatteki son mesajı silerse, db'deki users/ altındaki ilgili chat odasının lastMessage property'sini de güncellemem gerekiyor.
 
                 this._messages.push({
                     _id:key,
@@ -113,6 +119,49 @@ export default class RoomScreen extends React.Component {
         var message = messages[0].text;
         Firebase.getInstance().sendMessage(this._roomData,message);
     }
+    _longPress(context,message){
+        var k = context;
+        if (message.text) {
+            const options = [
+                'Kopyala',
+                'Benden sil',
+                'Şikayet et',
+                'Kişiyi engelle',
+                'İptal',
+            ];
+            const cancelButtonIndex = options.length - 1;
+            context.actionSheet().showActionSheetWithOptions({
+                options,
+                cancelButtonIndex,
+            },
+            (buttonIndex) => {
+                switch (buttonIndex) {
+                    case 0:
+                        Clipboard.setString(message.text);
+                    break;
+                    case 1:
+                        this.deleteMessage(this._roomData,message._id);
+                    break;
+                        
+                }
+            });
+        }
+    }
+
+    deleteMessage(roomId, messageId){
+        SpinnerContainer.getInstance().showSpinner();
+        Firebase.getInstance().deleteMessageFromList(roomId,messageId).then((data)=>{
+            this.setState((previousState) =>{
+                return {
+                    loading:false, 
+                    messages: previousState.messages.filter(message => message._id !== messageId) 
+                }
+            });
+            SpinnerContainer.getInstance().hideSpinner(null);
+        }).catch((error)=>{
+
+        })
+    }
 
     render(){
         if(this.state.loading)
@@ -124,6 +173,8 @@ export default class RoomScreen extends React.Component {
             return(
                 <View style={{marginBottom:20, flex:1}}>
                 <GiftedChat 
+                    renderUsernameOnMessage={true}
+                    onLongPress={this._longPress}
                     onSend={this.sendPressed}
                     messages={this.state.messages}
                     user={{_id:this._currentUser}}
