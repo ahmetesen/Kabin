@@ -128,6 +128,7 @@ export default class Firebase {
         this.adClick = this.funcs.httpsCallable('adClick');
         this.setPushToken = this.funcs.httpsCallable('setPushToken');
         this.deleteMessage = this.funcs.httpsCallable('deleteMessage');
+        this.reportUserOrMessage = this.funcs.httpsCallable('reportUserOrMessage');
         Firebase._instance = this;
     }
 
@@ -309,6 +310,22 @@ export default class Firebase {
                 return reject(error);
             })
         });
+    }
+
+    reportUser(roomName,messageId){
+        return new Promise((resolve,reject)=>{
+            return this.reportUserOrMessage({
+                roomName:roomName,
+                messageId:messageId
+            }).then((response)=>{
+                if(response.data.statusCode == 200)
+                    return resolve();
+                else
+                    return reject(response.data.error)
+            }).catch((error)=>{
+                return reject(error);
+            })
+        })
     }
 
     currentUserSeesAllMessage(roomName){

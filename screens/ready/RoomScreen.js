@@ -142,10 +142,23 @@ export default class RoomScreen extends React.Component {
                     case 1:
                         this.deleteMessage(this._roomData,message._id);
                     break;
+                    case 2:
+                        this.reportMessageOrUser(this._roomData,message._id);
+                    break;
                         
                 }
             });
         }
+    }
+
+    reportMessageOrUser(roomName, messageId){
+        SpinnerContainer.getInstance().showSpinner();
+        Firebase.getInstance().reportUser(roomName,messageId).then(()=>{
+            SpinnerContainer.getInstance().hideSpinner(null);
+        }).catch((error)=>{
+            //TODO: Handle this error
+            SpinnerContainer.getInstance().hideSpinner(null);
+        });
     }
 
     deleteMessage(roomId, messageId){
