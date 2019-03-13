@@ -7,6 +7,7 @@ import TabNavContainer from '../../components/views/TabNavContainer';
 import SpinnerContainer from '../../components/views/SpinnerContainer';
 import Firebase from '../../core/Firebase';
 import RoomListView from '../../components/views/RoomListView';
+import UsersManager from '../../core/UsersManager';
 export default class HomeScreen extends React.Component {
     _initialState = {
         user:null
@@ -31,6 +32,7 @@ export default class HomeScreen extends React.Component {
     componentWillMount(){
         this.props.navigation.setParams({ _primaryPressed: this._primaryPressed });
     }
+
     async componentDidMount(){
         await this.getUserData();
         Firebase.getInstance().registerForAllRoomsOfCurrentUser(this.roomsChanged);
@@ -61,6 +63,11 @@ export default class HomeScreen extends React.Component {
             SpinnerContainer.getInstance().hideSpinner(()=>{
                 Firebase.getInstance().activeUser = user;
                 this.setState({user:user});
+                if(user.blocked){
+                    for (var key in user.blocked) {
+                        UsersManager.instance.pushToBlockedList(key, user.blocked[key]);
+                    }
+                }
             });
         },
         (error)=>{

@@ -2,7 +2,8 @@ import React from 'react';
 import {View, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import TextBlock from '../texts/TextBlock';
-import {msToDate} from '../../helpers/DateHelper'
+import {msToDate} from '../../helpers/DateHelper';
+import SoftLine from '../shapes/SoftLine';
 
 export default class RoomListView extends React.Component{
 
@@ -78,12 +79,7 @@ export default class RoomListView extends React.Component{
                         </View>
                     </View>
                 </TouchableWithoutFeedback>
-                <View
-                    style={{
-                        borderBottomColor: '#878787',
-                        borderBottomWidth: .5,
-                    }}
-                />
+                <SoftLine />
             </View>
         );
     }

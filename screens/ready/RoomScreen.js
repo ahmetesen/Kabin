@@ -59,6 +59,7 @@ export default class RoomScreen extends React.Component {
     _firstChildAttempt = true;
 
     messageIncoming(key,message){
+        //TODO: Eğer roomscreen unmounted durumundaysa, return et.
         if(this._firstChildAttempt){
             this._firstChildAttempt = false;
             return;
@@ -87,7 +88,7 @@ export default class RoomScreen extends React.Component {
 
     _createMessageItem(value,key){
         return new Promise((resolve,reject)=>{
-            return UsersManager.instance.getUserName(value.sender).then((name)=>{
+            return UsersManager.instance.getUserName(value.sender).then((user)=>{
                 var sysId = 0;
                 if(this._roomData == "0")
                     sysId = -1;
@@ -95,6 +96,8 @@ export default class RoomScreen extends React.Component {
                 if(value.hiddenFrom && value.hiddenFrom == this._currentUser)
                     return resolve();
 
+                if(UsersManager.instance.checkIfBlocked(value.sender))
+                    return resolve();
                 //TODO: user eğer chatteki son mesajı silerse, db'deki users/ altındaki ilgili chat odasının lastMessage property'sini de güncellemem gerekiyor.
 
                 this._messages.push({
@@ -103,7 +106,7 @@ export default class RoomScreen extends React.Component {
                     createdAt:new Date(value.messageDate),
                     system: (value.sender==sysId)?true:false,
                     user:{
-                        name: name,
+                        name: user.displayName,
                         _id:value.sender
                     },
                 });
@@ -122,13 +125,21 @@ export default class RoomScreen extends React.Component {
     _longPress(context,message){
         var k = context;
         if (message.text) {
-            const options = [
-                'Kopyala',
-                'Benden sil',
-                'Şikayet et',
-                'Kişiyi engelle',
-                'İptal',
-            ];
+            let options = [];
+            if(message.user._id == this._currentUser)
+                options = [
+                    'Kopyala',
+                    'Benden sil',
+                    'İptal',
+                ];
+            else
+                options = [
+                    'Kopyala',
+                    'Benden sil',
+                    'Şikayet et',
+                    'Kişiyi engelle',
+                    'İptal',
+                ];
             const cancelButtonIndex = options.length - 1;
             context.actionSheet().showActionSheetWithOptions({
                 options,
@@ -143,9 +154,14 @@ export default class RoomScreen extends React.Component {
                         this.deleteMessage(this._roomData,message._id);
                     break;
                     case 2:
-                        this.reportMessageOrUser(this._roomData,message._id);
+                        if(message.user._id == this._currentUser)
+                            break;
+                        else
+                            this.reportMessageOrUser(this._roomData,message._id);
                     break;
-                        
+                    case 3:
+                        this.blockUser(message.user._id);
+                    break;
                 }
             });
         }
@@ -172,8 +188,31 @@ export default class RoomScreen extends React.Component {
             });
             SpinnerContainer.getInstance().hideSpinner(null);
         }).catch((error)=>{
+            SpinnerContainer.getInstance().hideSpinner(null);
+            //TODO
+        });
+    }
 
-        })
+    blockUser(targetId){
+        SpinnerContainer.getInstance().showSpinner();
+        Firebase.getInstance().blockSelectedUser(targetId).then(()=>{
+            SpinnerContainer.getInstance().hideSpinner(null);
+            UsersManager.instance.pushToBlockedList(targetId, true);
+
+            this.setState((previousState) =>{
+                return {
+                    loading:false, 
+                    messages: previousState.messages.filter(message => {
+                        return !UsersManager.instance.checkIfBlocked(message.user._id)
+                    }) 
+                }
+            });
+
+
+        }).catch((error)=>{
+            //TODO
+            SpinnerContainer.getInstance().hideSpinner(null);
+        });
     }
 
     render(){
@@ -185,14 +224,14 @@ export default class RoomScreen extends React.Component {
             //});
             return(
                 <View style={{marginBottom:20, flex:1}}>
-                <GiftedChat 
-                    renderUsernameOnMessage={true}
-                    onLongPress={this._longPress}
-                    onSend={this.sendPressed}
-                    messages={this.state.messages}
-                    user={{_id:this._currentUser}}
-                />
-                <KeyboardAvoidingView behavior={ Platform.OS === 'android' ? 'padding' :  null} keyboardVerticalOffset={80} />
+                    <GiftedChat 
+                        renderUsernameOnMessage={true}
+                        onLongPress={this._longPress}
+                        onSend={this.sendPressed}
+                        messages={this.state.messages}
+                        user={{_id:this._currentUser}}
+                    />
+                    <KeyboardAvoidingView behavior={ Platform.OS === 'android' ? 'padding' :  null} keyboardVerticalOffset={80} />
                 </View>
             )
         }

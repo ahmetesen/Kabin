@@ -1,10 +1,10 @@
 import React from 'react';
 import {AppLoading, Asset, Font, Icon, Notifications} from 'expo';
-import {View} from 'react-native';
+import {View, NetInfo} from 'react-native';
 import {Button, createAppContainer, createStackNavigator, createSwitchNavigator, createBottomTabNavigator} from 'react-navigation';
 import {ActivationScreen,CreateEmailScreen,NameScreen, CreatePasswordScreen} from './screens/auth/create';
 import { EmailScreen, PasswordScreen } from './screens/auth/login';
-import {HomeScreen, ProfileScreen, SettingsScreen, AddFlightScreen } from './screens/ready';
+import {HomeScreen, ProfileScreen, SettingsScreen, EditAboutScreen, AddFlightScreen, BlockedUsersScreen } from './screens/ready';
 import ErrorManager from './core/ErrorManager';
 import LandingScreen from './screens/LandingScreen';
 import Firebase from './core/Firebase';
@@ -14,6 +14,7 @@ import SpinnerContainer from './components/views/SpinnerContainer';
 import RoomScreen from './screens/ready/RoomScreen';
 import AdScreen from './screens/ready/AdScreen';
 import PushSheet from './components/views/PushSheet';
+import ErrorSheet from './components/views/ErrorSheet';
 import WebModalContainer from './components/views/WebModalContainer';
 
 class App extends React.Component {
@@ -29,7 +30,7 @@ class App extends React.Component {
     }
 
     _handleNotification = (notification)=>{
-        console.log("handled");
+        //TODO
     };
 
     componentWillMount(){
@@ -195,6 +196,12 @@ const LoggedNavigator = createStackNavigator({
     },
     Ad:{
         screen:AdScreen
+    },
+    EditAbout:{
+        screen:EditAboutScreen
+    },
+    BlockedUsers:{
+        screen:BlockedUsersScreen
     }
 },{
     initialRouteName: 'Logged',
@@ -218,11 +225,39 @@ const AppNavigator = createSwitchNavigator({
 const AppContainer = createAppContainer(AppNavigator);
 
 export default class TopView extends React.Component{
+    constructor(props){
+        super(props);
+        this.handleFirstConnectivityChange = this.handleFirstConnectivityChange.bind(this);
+    }
+    componentDidMount(){
+        this.showConnectionError();
+        NetInfo.addEventListener('connectionChange', this.handleFirstConnectivityChange);
+    }
+
+    showConnectionError(){
+        if(!NetInfo.isConnected)
+        {
+            ErrorSheet.getInstance().showSheet("İnternet bağlantınla ilgili bir problem varmış gibi görünüyor. Eğer uygulamayla ilgili sorun yaşıyorsan bize web sitemizdeki iletişim formundan ulaş.");
+        }
+        else{
+            ErrorSheet.getInstance().hideSheet();
+        }
+    }
+
+    componentWillUnmount(){
+        NetInfo.removeEventListener('connectionChange', this.handleFirstConnectivityChange);
+    }
+
+    handleFirstConnectivityChange(connectionInfo) {
+        this.showConnectionError();
+    }
+
     render(){
         return(
             <View style={{flex:1}}>
                 <AppContainer/>
                 <SpinnerContainer/>
+                <ErrorSheet/>
                 <PushSheet/>
                 <WebModalContainer/>
             </View>

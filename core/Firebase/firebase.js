@@ -129,6 +129,9 @@ export default class Firebase {
         this.setPushToken = this.funcs.httpsCallable('setPushToken');
         this.deleteMessage = this.funcs.httpsCallable('deleteMessage');
         this.reportUserOrMessage = this.funcs.httpsCallable('reportUserOrMessage');
+        this.blockUser = this.funcs.httpsCallable('blockUser');
+        this.unblockUser = this.funcs.httpsCallable('unblockUser');
+        this.saveAbout = this.funcs.httpsCallable('saveAbout');
         Firebase._instance = this;
     }
 
@@ -185,6 +188,7 @@ export default class Firebase {
             if(result)
             {
                 this._userPushToken = result.data.user.token;
+                
                 success(result.data.user);
             }
         }).catch((error)=>{
@@ -260,7 +264,11 @@ export default class Firebase {
                 var message = value.lastMessage;
                 if(message === Firebase.getInstance()._lastSentMessage)
                     return;
-                var title = snapShot.key.split('+')[1];
+                var title = "";
+                if(snapShot.key == "0")
+                    title = "Kabinbot"
+                else
+                    title = snapShot.key.split('+')[1];
                 PushSheet.getInstance().showSheet(title+" - "+message);
             }
         });
@@ -326,6 +334,37 @@ export default class Firebase {
                 return reject(error);
             })
         })
+    }
+
+    blockSelectedUser(targetId){
+        return new Promise((resolve,reject)=>{
+            this.blockUser({targetId}).then(()=>{
+                return resolve();
+            }).catch((error)=>{
+                return reject(error);
+            });
+        });
+    }
+
+    unblockSelectedUser(targetId){
+        return new Promise((resolve,reject)=>{
+            this.unblockUser({targetId}).then(()=>{
+                return resolve();
+            }).catch((error)=>{
+                return reject(error);
+            });
+        });
+    }
+
+    saveAboutText(text){
+        return new Promise((resolve,reject)=>{
+            this.saveAbout({about:text}).then((data)=>{
+                Firebase.getInstance().activeUser.about = text;
+                return resolve(data);
+            }).catch((error)=>{
+                return reject(error);
+            })
+        });
     }
 
     currentUserSeesAllMessage(roomName){

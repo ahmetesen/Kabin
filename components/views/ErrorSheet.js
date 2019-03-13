@@ -3,24 +3,24 @@ import {Animated, View, StyleSheet, Vibration } from 'react-native';
 import TextBlock from '../texts/TextBlock';
 
 
-export default class PushSheet extends React.Component{
+export default class ErrorSheet extends React.Component{
     static INSTANTIATED = false;
-    static _pushSheetInstance;
+    static _errorSheetInstance;
     static getInstance(){
-        if(_pushSheetInstance)
-            return _pushSheetInstance;
+        if(_errorSheetInstance)
+            return _errorSheetInstance;
     }
 
     state = {
         fadeAnim: new Animated.Value(0),
         visible:false,
-        message:"Push Notification"
+        message:"Error Notification"
     }
     constructor(props){
-        if(!PushSheet.INSTANTIATED){
+        if(!ErrorSheet.INSTANTIATED){
             super(props);
-            PushSheet.INSTANTIATED=true;
-            _pushSheetInstance = this;
+            ErrorSheet.INSTANTIATED=true;
+            _errorSheetInstance = this;
         }
         else
             throw new Error("You cannot create second instance of Push Sheet!");
@@ -39,17 +39,10 @@ export default class PushSheet extends React.Component{
         }
     )
 
-    _hideSheetTimeout=null;
-
     showSheet(message){
         this.setState({visible:true,message:message});
         this._fadeIn.start();
         Vibration.vibrate(100);
-        if(this._hideSheetTimeout)
-            clearTimeout(this._hideSheetTimeout);
-        this._hideSheetTimeout = setTimeout(function(){
-            PushSheet.getInstance().hideSheet(null);
-        },3000);
     }
 
     hideSheet(action){
