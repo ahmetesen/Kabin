@@ -94,8 +94,8 @@ export default class RoomScreen extends React.Component {
                     sysId = -1;
 
                 if(value.hiddenFrom){
-                    for(key in value.hiddenFrom){
-                        if(value.hiddenFrom[key]==this._currentUser){
+                    for(subKey in value.hiddenFrom){
+                        if(value.hiddenFrom[subKey]==this._currentUser){
                             return resolve();
                         }
                         else
