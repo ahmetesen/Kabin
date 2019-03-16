@@ -93,8 +93,15 @@ export default class RoomScreen extends React.Component {
                 if(this._roomData == "0")
                     sysId = -1;
 
-                if(value.hiddenFrom && value.hiddenFrom == this._currentUser)
-                    return resolve();
+                if(value.hiddenFrom){
+                    for(key in value.hiddenFrom){
+                        if(value.hiddenFrom[key]==this._currentUser){
+                            return resolve();
+                        }
+                        else
+                            continue;
+                    }
+                }
 
                 if(UsersManager.instance.checkIfBlocked(value.sender))
                     return resolve();
