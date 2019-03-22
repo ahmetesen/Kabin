@@ -30,10 +30,8 @@ export default class AddFlightScreen extends React.Component{
 
     _checkFlightCode(code){
         code = code.toUpperCase();
-        if(!code.startsWith('TK'))
-            return null;
         var justCode = code.slice(2);
-        var newCode = "TK";
+        var newCode = code[0]+code[1];
         checkAgain = true;
         for(var i = 0;i<justCode.length;i++){
             if(justCode[i] === '0' && checkAgain)
@@ -45,7 +43,6 @@ export default class AddFlightScreen extends React.Component{
                 newCode += justCode[i];
             }
         }
-
         return newCode;
     }
 
@@ -70,14 +67,10 @@ export default class AddFlightScreen extends React.Component{
                 });
             });
         }
-
-
-
-        
         else{
             Alert.alert(
                 'Bilgi',
-                "Eklemek istediğin uçuşun kodu TK ile başlamalı ve gerisi rakamlardan oluşmalı",
+                "Eklemek istediğin uçuşun ilk iki karakteri şirketinin IATA kodu olmalı ve gerisi rakamlardan oluşmalı",
                 [
                     {
                         text:'Tamam', 

@@ -112,7 +112,7 @@ export default class CreateEmailScreen extends React.Component{
                             <LinkButton title="Devam ederek, kullanıcı sözleşmesini kabul etmiş sayılırsınız." onPress={this._eulaClick}></LinkButton>
                         </View>
                         <View style={styles.infoContainer}>
-                            <TextBlock small>*Şimdilik yalnızca THY personellerini kabul edebiliyoruz. </TextBlock>
+                            
                         </View>
                     </KeyboardAvoidingView>
                     <View style={styles.footerContainer}>
