@@ -29,6 +29,7 @@ export const styles = StyleSheet.create({
     infoContainer:{
         flex:.3,
         justifyContent:'flex-end',
+        alignItems:"center",
         paddingBottom:16
     },
     textBoxContainer:{

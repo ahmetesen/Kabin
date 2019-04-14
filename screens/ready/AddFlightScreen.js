@@ -15,9 +15,7 @@ export default class AddFlightScreen extends React.Component{
     
     static navigationOptions={
         headerTitle:'Uçuş Ekle',
-        headerTitleStyle:{
-            ...tabHeaderStyle
-        }
+        headerTitleStyle: {fontWeight:'200',fontFamily:'nunito-semibold',}
     }
 
     constructor(props){

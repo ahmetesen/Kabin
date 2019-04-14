@@ -4,6 +4,7 @@ import TextBlock from '../../../components/texts/TextBlock';
 import GradientContainer from '../../../components/views/GradientContainer';
 import TextBox from '../../../components/texts/TextBox';
 import Hr from '../../../components/shapes/Hr';
+import PrimaryButton from '../../../components/buttons/PrimaryButton';
 import SecondaryButton from '../../../components/buttons/SecondaryButton';
 import {styles} from '../create/style';
 import Firebase from '../../../core/Firebase';
@@ -17,6 +18,7 @@ export default class CreateEmailScreen extends React.Component{
         this.state = this._initialState;
         this._onMailTextChange = this._onMailTextChange.bind(this);
         this._onSubmit = this._onSubmit.bind(this);
+        this._primaryPress = this._primaryPress.bind(this);
         this._secondaryPress = this._secondaryPress.bind(this);
     }
     _onMailTextChange(value){
@@ -41,13 +43,19 @@ export default class CreateEmailScreen extends React.Component{
         this.setState({errorMessage:errorMessage});
         return false;
     }
-    _onSubmit(e){
+    _onMailComplete(){
         if(this.state.email ==""){
             this.setState({errorMessage:"Bir epostan olmalı?"});
             return;
         }
         else if(this._validateEmail())
             this.props.navigation.navigate("Password",{email:this.state.email});
+    }
+    _onSubmit(e){
+        this._onMailComplete();
+    }
+    _primaryPress(event){
+        this._onMailComplete();
     }
     _secondaryPress(event){
         this.props.navigation.navigate('Name');
@@ -75,6 +83,7 @@ export default class CreateEmailScreen extends React.Component{
                             />
                         </View>
                         <View style={styles.infoContainer}>
+                            <PrimaryButton title=" Devam " onPress={this._primaryPress}/>
                         </View>
                     </KeyboardAvoidingView>
                     <View style={styles.footerContainer}>

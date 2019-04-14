@@ -8,6 +8,7 @@ import ListItem from '../../components/views/ListItem';
 import TextBlock from '../../components/texts/TextBlock';
 export default class BlockedUsersScreen extends React.Component {
     static navigationOptions = {
+        headerTitleStyle: {fontWeight:'200',fontFamily:'nunito-semibold',},
         title: `Engelli Kullanıcılar`
     };
 

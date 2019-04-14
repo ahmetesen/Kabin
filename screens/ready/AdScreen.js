@@ -7,6 +7,7 @@ import { PrimaryButton } from '../../components/buttons';
 export default class AdScreen extends React.Component {
     
     static navigationOptions = ({navigation})=>({
+        headerTitleStyle: {fontWeight:'200',fontFamily:'nunito-semibold',},
         title: `${navigation.state.params.title}`
     });
 

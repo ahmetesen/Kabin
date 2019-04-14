@@ -15,6 +15,7 @@ export default class HomeScreen extends React.Component {
     added = false;
     static navigationOptions = ({navigation})=>{
         return{
+            headerTitleStyle: {color:'#283AD8',fontSize:36,fontWeight:'200',fontFamily:'nunito-black',},
             headerRight:(
                 <Ionicons style={{marginRight:16}} onPress={navigation.getParam('_primaryPressed')} name="md-add" size={32} color='#283AD8' />
             ),

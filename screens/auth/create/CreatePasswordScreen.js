@@ -5,6 +5,7 @@ import GradientContainer from '../../../components/views/GradientContainer';
 import SpinnerContainer from '../../../components/views/SpinnerContainer';
 import TextBox from '../../../components/texts/TextBox';
 import Hr from '../../../components/shapes/Hr';
+import PrimaryButton from '../../../components/buttons/PrimaryButton';
 import SecondaryButton from '../../../components/buttons/SecondaryButton';
 import {styles} from './style';
 import Firebase from '../../../core/Firebase';
@@ -22,11 +23,12 @@ export default class CreatePasswordScreen extends React.Component{
         this.state = this._initialState;
         this._onPasswordTextChange = this._onPasswordTextChange.bind(this);
         this._onSubmit = this._onSubmit.bind(this);
+        this._primaryPress = this._primaryPress.bind(this);
         this._secondaryPress = this._secondaryPress.bind(this);
     }
     componentWillMount(){
         name = this.props.navigation.getParam('name','Misafir');
-        email = this.props.navigation.getParam('email','ahmetesen88@gmail.com');
+        email = this.props.navigation.getParam('email','');
         this.setState({name:name, email:email});
     }
     _onPasswordTextChange(value){
@@ -67,12 +69,18 @@ export default class CreatePasswordScreen extends React.Component{
             }
         );
     }
-    _onSubmit(e){
+    _createPasswordComplete(){
         if(this.state.password ==""){
             return;
         }
         else if(this.state.password.length>5)
             this._signUserUp();
+    }
+    _onSubmit(e){
+        this._createPasswordComplete();
+    }
+    _primaryPress(e){
+        this._createPasswordComplete();
     }
     _secondaryPress(event){
         this.props.navigation.navigate('Email');
@@ -102,8 +110,11 @@ export default class CreatePasswordScreen extends React.Component{
                                 placeholder='Bir şifre belirle.'
                             />
                         </View>
-                        <View style={styles.infoContainer}>
+                        <View>
                             <TextBlock small>Şifreni belirledikten sonra sana bir eposta göndereceğiz. Üyeliğini tamamlamak için epostadaki linke tıklaman gerekiyor.</TextBlock>
+                        </View>
+                        <View style={styles.infoContainer}>
+                            <PrimaryButton title=" Devam " onPress={this._primaryPress}/>
                         </View>
                     </KeyboardAvoidingView>
                     <View style={styles.footerContainer}>

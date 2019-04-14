@@ -10,7 +10,7 @@ import SoftLine from '../../components/shapes/SoftLine';
 import UsersManager from '../../core/UsersManager';
 export default class SettingsScreen extends React.Component {
     static navigationOptions = {
-        
+        headerTitleStyle: {color:'#283AD8',fontWeight:'200',fontFamily:'nunito-semibold',}
     };
 
     constructor(props){
@@ -117,7 +117,7 @@ export default class SettingsScreen extends React.Component {
                         </TextBlock>
                         <View style={{...styles.arrowView,flex:.2}}>
                             <TextBlock dark>
-                                1.0.5
+                                1.0.7
                             </TextBlock>
                         </View>
                     </View>

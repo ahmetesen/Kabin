@@ -37,7 +37,7 @@ class App extends React.Component {
         Firebase.initializeApp();
         checkStateChangedAndUnsubscribe = Firebase.getInstance().auth.onAuthStateChanged((user)=>{
             //TODO: Kullanıcı verification mail'ini onayladı mı check et.
-            if(user)
+            if(user && user.emailVerified)
                 this.startPage = "Main";
             checkStateChangedAndUnsubscribe();
             this.loaderCollected();

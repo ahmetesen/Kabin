@@ -10,12 +10,17 @@
     ],
     "scheme": "kabin",
     "primaryColor": "#283AD8",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "orientation": "portrait",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
+    },
+    "notification":{
+      "icon":"./assets/images/push.png",
+      "color":"#283AD8"
+
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -30,6 +35,7 @@
     },
     "android": {
       "package": "com.aee.kabin",
+      "versionCode": 2,
       "googleServicesFile": "./google-services.json",
       "icon": "./assets/images/icon.png"
     },

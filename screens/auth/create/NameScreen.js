@@ -6,6 +6,7 @@ import TextBox from '../../../components/texts/TextBox';
 import Hr from '../../../components/shapes/Hr';
 import SecondaryButton from '../../../components/buttons/SecondaryButton';
 import {styles} from './style';
+import { PrimaryButton } from '../../../components/buttons';
 export default class NameScreen extends React.Component{
     _initialState={
         name:'',
@@ -16,6 +17,7 @@ export default class NameScreen extends React.Component{
         this.state = this._initialState;
         this._onNameTextChange = this._onNameTextChange.bind(this);
         this._onSubmit = this._onSubmit.bind(this);
+        this._primaryPress = this._primaryPress.bind(this);
         this._secondaryPress = this._secondaryPress.bind(this);
     }
     _onNameTextChange(value){
@@ -25,16 +27,25 @@ export default class NameScreen extends React.Component{
 
     }
     _onSubmit(e){
+        this.nameComplete();
+    }
+
+    _primaryPress(event){
+        this.nameComplete();
+    }
+
+    nameComplete(){
         if(this.state.name ==""){
-            //this.setState({errorMessage:"Bir adın olmalı?"});
             return;
         }
         else
             this.props.navigation.navigate("CreateEmail",{name:this.state.name});
     }
+
     _secondaryPress(event){
         this.props.navigation.navigate('Email');
     }
+
     render(){
         return(
             <GradientContainer>
@@ -62,7 +73,7 @@ export default class NameScreen extends React.Component{
                             />
                         </View>
                         <View style={styles.infoContainer}>
-
+                            <PrimaryButton title=" Devam " onPress={this._primaryPress}/>
                         </View>
                     </KeyboardAvoidingView>
                     <View style={styles.footerContainer}>

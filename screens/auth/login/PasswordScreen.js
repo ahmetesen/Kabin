@@ -5,6 +5,7 @@ import GradientContainer from '../../../components/views/GradientContainer';
 import SpinnerContainer from '../../../components/views/SpinnerContainer';
 import TextBox from '../../../components/texts/TextBox';
 import Hr from '../../../components/shapes/Hr';
+import PrimaryButton from '../../../components/buttons/PrimaryButton';
 import SecondaryButton from '../../../components/buttons/SecondaryButton';
 import {styles} from '../create/style';
 import Firebase from '../../../core/Firebase';
@@ -21,6 +22,7 @@ export default class PassworScreen extends React.Component{
         this.state = this._initialState;
         this._onPasswordTextChange = this._onPasswordTextChange.bind(this);
         this._onSubmit = this._onSubmit.bind(this);
+        this._primaryPress = this._primaryPress.bind(this);
         this._secondaryPress = this._secondaryPress.bind(this);
         this._linkPress = this._linkPress.bind(this);
     }
@@ -57,12 +59,18 @@ export default class PassworScreen extends React.Component{
             }
         );
     }
-    _onSubmit(e){
+    _onPasswordComplete(){
         if(this.state.password ==""){
             return;
         }
         else if(this.state.password.length>5)
             this._signUserIn();
+    }
+    _onSubmit(e){
+        this._onPasswordComplete();
+    }
+    _primaryPress(event){
+        this._onPasswordComplete();
     }
     _secondaryPress(event){
         this.props.navigation.navigate('Name');
@@ -104,11 +112,12 @@ export default class PassworScreen extends React.Component{
                                 placeholder='Şifren?'
                             />
                             <View style={{flexDirection:'row', justifyContent:'flex-start', alignItems:'center', marginLeft:8}}>
-                                <TextBlock small>Hatırlamıyor musun?</TextBlock>
+                                <TextBlock small>Hatırlamıyor musun? </TextBlock>
                                 <LinkButton onPress={this._linkPress} title="Şifremi Unuttum"></LinkButton>
                             </View>
                         </View>
                         <View style={styles.infoContainer}>
+                            <PrimaryButton title="Giriş Yap" onPress={this._primaryPress}/>
                         </View>
                     </KeyboardAvoidingView>
                     <View style={styles.footerContainer}>

@@ -20,6 +20,7 @@ export default class WebModalContainer extends Component {
             this.state = this._initialState;
             this._webviewLoaded = this._webviewLoaded.bind(this);
             this._closeClick = this._closeClick.bind(this);
+            this._requestClose = this._requestClose.bind(this);
         }
         else
             throw new Error("You cannot create second instance of Push Sheet!");
@@ -28,6 +29,10 @@ export default class WebModalContainer extends Component {
     _initialState={
         modalVisible:false,
         source:null
+    }
+
+    _requestClose(param){
+        this.closeModal();
     }
 
     setModalVisible(visible) {
@@ -61,6 +66,7 @@ export default class WebModalContainer extends Component {
                 transparent
                 animationType="slide"
                 visible={this.state.modalVisible}
+                onRequestClose={this._requestClose}
                 presentationStyle="overFullScreen">
                 <View style={styling.mainContainer}>
                     <WebView onLoad={this._webviewLoaded} style={styling.webViewContainer} source={{uri: this.state.source}}>

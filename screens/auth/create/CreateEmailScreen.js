@@ -6,6 +6,7 @@ import SpinnerContainer from '../../../components/views/SpinnerContainer';
 import TextBox from '../../../components/texts/TextBox';
 import Hr from '../../../components/shapes/Hr';
 import SecondaryButton from '../../../components/buttons/SecondaryButton';
+import PrimaryButton from '../../../components/buttons/PrimaryButton';
 import {styles} from './style';
 import Firebase from '../../../core/Firebase';
 import { StackActions, NavigationActions } from 'react-navigation';
@@ -22,6 +23,7 @@ export default class CreateEmailScreen extends React.Component{
         this.state = this._initialState;
         this._onMailTextChange = this._onMailTextChange.bind(this);
         this._onSubmit = this._onSubmit.bind(this);
+        this._primaryPress = this._primaryPress.bind(this);
         this._secondaryPress = this._secondaryPress.bind(this);
         this._eulaClick = this._eulaClick.bind(this);
     }
@@ -55,7 +57,6 @@ export default class CreateEmailScreen extends React.Component{
         SpinnerContainer.getInstance().showSpinner();
         Firebase.getInstance().checkUserIsAlreadyExist(this.state.email,
             ()=>{
-                
                 SpinnerContainer.getInstance().hideSpinner(()=>{
                     this.props.navigation.navigate("CreatePassword",{name:this.state.name,email:this.state.email});
                 });
@@ -69,6 +70,10 @@ export default class CreateEmailScreen extends React.Component{
         );
     }
     _onSubmit(e){
+        this._createEmailComplete();
+    }
+
+    _createEmailComplete(){
         if(this.state.email ==""){
             this.setState({errorMessage:"Bir epostan olmalı?"});
             return;
@@ -76,6 +81,11 @@ export default class CreateEmailScreen extends React.Component{
         else if(this._validateEmail())
             this._checkIsUserLoggedAlready();
     }
+
+    _primaryPress(event){
+        this._createEmailComplete();
+    }
+
     _secondaryPress(event){
         this.props.navigation.navigate('Email');
     }
@@ -112,7 +122,7 @@ export default class CreateEmailScreen extends React.Component{
                             <LinkButton title="Devam ederek, kullanıcı sözleşmesini kabul etmiş sayılırsınız." onPress={this._eulaClick}></LinkButton>
                         </View>
                         <View style={styles.infoContainer}>
-                            
+                            <PrimaryButton title=" Devam " onPress={this._primaryPress}/>
                         </View>
                     </KeyboardAvoidingView>
                     <View style={styles.footerContainer}>
