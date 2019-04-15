@@ -181,6 +181,10 @@ export default class Firebase {
         });
     }
 
+    getActiveUserEmail(){
+        return this.auth.currentUser.email;
+    }
+
     async getUser(success,fail){
         await this.registerForPushNotificationsAsync();
         var displayName = this.auth.currentUser.displayName;

@@ -18,12 +18,44 @@ export default class AddFlightScreen extends React.Component{
         headerTitleStyle: {fontWeight:'200',fontFamily:'nunito-semibold',}
     }
 
+    isExclusive = false;
+    airlineCode = "";
+
     constructor(props){
         super(props);
-        this.state = {date:currentDate, flightCode:''}
+
+        this.airlineCode = this._getFirmCode(Firebase.getInstance().getActiveUserEmail());
+        if(this.airlineCode != ""){
+            this.isExclusive = true;
+        }
+        this.state = {date:currentDate, flightCode:this.airlineCode}
         this._primaryPressed = this._primaryPressed.bind(this);
         this._onFlightCodeTextChange = this._onFlightCodeTextChange.bind(this);
         this._onSubmit = this._onSubmit.bind(this);
+    }
+
+    _checkFirm(code){
+        return false;
+    }
+
+    _firms = {
+        "thy":"tk",
+        "atlasglb":"KK",
+        "onurair":"8Q",
+        "sunexpress":"XQ",
+        "flypgs":"PC",
+        "gmail":"GM"
+    };
+
+    _getFirmCode(email){
+        var code="";
+        var splittedWithAt = email.split("@");
+        if(splittedWithAt.length>0){
+            var splittedWithDot = splittedWithAt[1].split(".");
+            if(splittedWithDot.length>0)
+                code = this._firms[splittedWithDot[0]];
+        }
+        return code;
     }
 
     _checkFlightCode(code){
@@ -44,6 +76,9 @@ export default class AddFlightScreen extends React.Component{
         return newCode;
     }
 
+    componentWillMount(){
+        
+    }
 
     _primaryPressed(event){
         var dateParts = this.state.date.split("/");

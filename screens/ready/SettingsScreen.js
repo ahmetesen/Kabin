@@ -117,7 +117,7 @@ export default class SettingsScreen extends React.Component {
                         </TextBlock>
                         <View style={{...styles.arrowView,flex:.2}}>
                             <TextBlock dark>
-                                1.0.7
+                                8
                             </TextBlock>
                         </View>
                     </View>
