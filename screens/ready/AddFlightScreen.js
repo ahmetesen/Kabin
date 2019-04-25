@@ -44,7 +44,7 @@ export default class AddFlightScreen extends React.Component{
         "onurair":"8Q",
         "sunexpress":"XQ",
         "flypgs":"PC",
-        "gmail":"GM"
+        "aktifbank":"AB"
     };
 
     _getFirmCode(email){
