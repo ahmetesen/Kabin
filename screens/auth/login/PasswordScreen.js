@@ -116,10 +116,10 @@ export default class PassworScreen extends React.Component{
                                 <LinkButton onPress={this._linkPress} title="Şifremi Unuttum"></LinkButton>
                             </View>
                         </View>
-                        <View style={styles.infoContainer}>
-                            <PrimaryButton title="Giriş Yap" onPress={this._primaryPress}/>
-                        </View>
                     </KeyboardAvoidingView>
+                    <View style={styles.infoContainer}>
+                        <PrimaryButton title="Giriş Yap" onPress={this._primaryPress}/>
+                    </View>
                     <View style={styles.footerContainer}>
                         <Hr title="Henüz kaydolmadın mı?"></Hr>
                         <SecondaryButton title="Üye Ol" onPress={this._secondaryPress}></SecondaryButton>

@@ -7,7 +7,7 @@ import SpinnerContainer from '../../components/views/SpinnerContainer';
 export default class RoomScreen extends React.Component {
     static navigationOptions = ({navigation})=>({
         title: `${navigation.state.params.title}`,
-        headerTitleStyle: {fontWeight:'200',fontFamily:'nunito-semibold',}
+        headerTitleStyle: {fontWeight:'200',fontFamily:'nunito-semibold',fontSize:22}
     });
     _initialState={
         loading:true,

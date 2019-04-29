@@ -132,6 +132,10 @@ export default class Firebase {
         this.blockUser = this.funcs.httpsCallable('blockUser');
         this.unblockUser = this.funcs.httpsCallable('unblockUser');
         this.saveAbout = this.funcs.httpsCallable('saveAbout');
+        this.validateEmail = this.funcs.httpsCallable('isMailValid');
+        this.archiveRoom = this.funcs.httpsCallable('archiveRoom');
+        this.dearchiveRoom = this.funcs.httpsCallable('dearchiveRoom');
+        this.deleteRoom = this.funcs.httpsCallable('deleteRoom');
         Firebase._instance = this;
     }
 
@@ -140,7 +144,7 @@ export default class Firebase {
             success()
         }).catch((error)=>{
             fail(errorTextBuilder(error.code,"reloadUserData"));
-        })
+        });
     }
 
     getName(uid,success,fail){
@@ -270,7 +274,7 @@ export default class Firebase {
                     return;
                 var title = "";
                 if(snapShot.key == "0")
-                    title = "Kabinbot"
+                    title = "Kabin İletişim"
                 else
                     title = snapShot.key.split('+')[1];
                 PushSheet.getInstance().showSheet(title+" - "+message);
@@ -395,6 +399,45 @@ export default class Firebase {
         return new Promise((resolve,reject)=>{
             this.adClick({adId}).then(()=>{
                 return resolve();
+            }).catch((error)=>{
+                return reject(error);
+            });
+        });
+    }
+
+    archiveFlight(roomName){
+        return new Promise((resolve,reject)=>{
+            this.archiveRoom({roomName}).then((response)=>{
+                if(response.data.statusCode==200)
+                    return resolve();
+                else
+                    return reject(response.data.error);
+            }).catch((error)=>{
+                return reject(error);
+            });
+        });
+    }
+
+    dearchiveFlight(roomName){
+        return new Promise((resolve,reject)=>{
+            this.dearchiveRoom({roomName}).then((response)=>{
+                if(response.data.statusCode==200)
+                    return resolve();
+                else
+                    return reject(response.data.error);
+            }).catch((error)=>{
+                return reject(error);
+            });
+        });
+    }
+
+    deleteFlight(roomName){
+        return new Promise((resolve,reject)=>{
+            this.deleteRoom({roomName}).then((response)=>{
+                if(response.data.statusCode==200)
+                    return resolve();
+                else
+                    return reject(response.data.error);
             }).catch((error)=>{
                 return reject(error);
             });

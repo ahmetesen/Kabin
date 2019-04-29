@@ -113,10 +113,10 @@ export default class CreatePasswordScreen extends React.Component{
                         <View>
                             <TextBlock small>Şifreni belirledikten sonra sana bir eposta göndereceğiz. Üyeliğini tamamlamak için epostadaki linke tıklaman gerekiyor.</TextBlock>
                         </View>
-                        <View style={styles.infoContainer}>
-                            <PrimaryButton title=" Devam " onPress={this._primaryPress}/>
-                        </View>
                     </KeyboardAvoidingView>
+                    <View style={styles.infoContainer}>
+                        <PrimaryButton title=" Devam " onPress={this._primaryPress}/>
+                    </View>
                     <View style={styles.footerContainer}>
                         <Hr title="Zaten üye misin?"></Hr>
                         <SecondaryButton title="Giriş Yap" onPress={this._secondaryPress}></SecondaryButton>

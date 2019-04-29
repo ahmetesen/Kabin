@@ -10,7 +10,7 @@ import SoftLine from '../../components/shapes/SoftLine';
 import UsersManager from '../../core/UsersManager';
 export default class EditAboutScreen extends React.Component {
     static navigationOptions = {
-        headerTitleStyle: {fontWeight:'200',fontFamily:'nunito-semibold',},
+        headerTitleStyle: {fontWeight:'200',fontFamily:'nunito-semibold',fontSize:22},
         title: `Hakkımda`
     };
 

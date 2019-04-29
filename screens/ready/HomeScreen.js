@@ -15,7 +15,7 @@ export default class HomeScreen extends React.Component {
     added = false;
     static navigationOptions = ({navigation})=>{
         return{
-            headerTitleStyle: {color:'#283AD8',fontSize:36,fontWeight:'200',fontFamily:'nunito-black',},
+            headerTitleStyle: {color:'#283AD8',fontSize:36,fontWeight:'200',fontFamily:'nunito-black'},
             headerRight:(
                 <Ionicons style={{marginRight:16}} onPress={navigation.getParam('_primaryPressed')} name="md-add" size={32} color='#283AD8' />
             ),
@@ -92,7 +92,10 @@ export default class HomeScreen extends React.Component {
 
     _primaryPressed(event){
         this.added=true;
-        this.props.navigation.navigate('AddFlight');
+        var firm = "";
+        if(this.state.user.firm)
+            firm = this.state.user.firm;
+        this.props.navigation.navigate('AddFlight',{firm:firm});
     }
     _itemPress(key){
         if(key == 'Z'){
@@ -116,8 +119,11 @@ export default class HomeScreen extends React.Component {
             return null;
         else{
             var chatRooms = this.state.user.rooms;
+            UsersManager.instance.rooms = this.state.user.rooms;
             _adId = chatRooms['Z'].adId;
             const RoomsContainer = Object.keys(chatRooms).map(key =>{
+                if(chatRooms[key].archived || chatRooms[key].deleted)
+                    return null;
                 //message = chatRooms[key].lastMessage;
                 return (<RoomListView onItemPress={this._itemPress} key={key} title={key} lastMessage={chatRooms[key].lastMessage} timeStamp={chatRooms[key].timeStamp} isAlive={chatRooms[key].isAlive} mustShown={chatRooms[key].mustShown} readYet={chatRooms[key].readYet} image={chatRooms[key].image} ></RoomListView>);
             });
@@ -129,7 +135,7 @@ export default class HomeScreen extends React.Component {
                         {RoomsContainer}
                     </View>
                     <View style={{marginTop:16, justifyContent:'center', alignItems:'center'}}>
-                        <TextBlock style={{marginBottom:16}} dark>Bir sonraki uçuşunu ekle{'\n'}ve uçuş kabinine katıl...</TextBlock>
+                        <TextBlock style={{marginBottom:16}} dark>Bir sonraki uçuşunu ekle{'\n'}ve Kabin'e katıl...</TextBlock>
                         <PrimaryButton style={{margin:16}} title="Uçuş Ekle" onPress={this._primaryPressed}/>
                     </View>
                 </TabNavContainer>

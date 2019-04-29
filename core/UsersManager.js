@@ -13,6 +13,7 @@ export default class UsersManager{
     }
     users={};
     blockedUsers = {};
+    rooms={};
     me={
         about:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec laoreet pretium vestibulum. Morbi quis rhoncus mauris. Mauris diam tortor, auctor at sem vitae, interdum commodo turpis. ",
     };

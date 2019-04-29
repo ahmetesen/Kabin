@@ -53,13 +53,21 @@ export default class CreateEmailScreen extends React.Component{
         this.setState({errorMessage:errorMessage});
         return false;
     }
+    
     _checkIsUserLoggedAlready(){
         SpinnerContainer.getInstance().showSpinner();
         Firebase.getInstance().checkUserIsAlreadyExist(this.state.email,
             ()=>{
-                SpinnerContainer.getInstance().hideSpinner(()=>{
-                    this.props.navigation.navigate("CreatePassword",{name:this.state.name,email:this.state.email});
+                this._checkEmailIsValid().then(()=>{
+                    SpinnerContainer.getInstance().hideSpinner(()=>{
+                        this.props.navigation.navigate("CreatePassword",{name:this.state.name,email:this.state.email});
+                    });
+                }).catch((error)=>{
+                    SpinnerContainer.getInstance().hideSpinner(()=>{
+                        this.setState({errorMessage:error});
+                    });
                 });
+                
             },
             (response)=>{
                 SpinnerContainer.getInstance().hideSpinner(()=>{
@@ -69,6 +77,26 @@ export default class CreateEmailScreen extends React.Component{
             }
         );
     }
+
+    _checkEmailIsValid(){
+        var email = this.state.email;
+        var domainPart = email.split('@')[1];
+        var baseDomain = domainPart.split('.')[0];
+        return new Promise((resolve,reject)=>{
+            return Firebase.getInstance().validateEmail({emailDomain:baseDomain}).then((response)=>{
+                if(response.data && response.data.statusCode && response.data.statusCode === 200){
+                    return resolve();
+                }
+                else if(response.data && response.data.statusCode && response.data.statusCode === 400)
+                    return reject(response.data.error)
+                else
+                    return reject("Bir hata oluştu :( Eposta adresinde bir hata olabilir mi?")
+            }).catch((error)=>{
+                return reject(error.error);
+            });
+        });
+    }
+
     _onSubmit(e){
         this._createEmailComplete();
     }
@@ -78,8 +106,10 @@ export default class CreateEmailScreen extends React.Component{
             this.setState({errorMessage:"Bir epostan olmalı?"});
             return;
         }
-        else if(this._validateEmail())
+        else if(this._validateEmail()){
+            // TODO: Check if user is email valid.
             this._checkIsUserLoggedAlready();
+        }
     }
 
     _primaryPress(event){
@@ -115,16 +145,16 @@ export default class CreateEmailScreen extends React.Component{
                                 returnKeyType="next"
                                 autoFocus={true}
                                 shake={true}
-                                placeholder='E-posta adresin nedir?'
+                                placeholder='Şirket e-posta adresin nedir?'
                             />
                         </View>
                         <View>
                             <LinkButton title="Devam ederek, kullanıcı sözleşmesini kabul etmiş sayılırsınız." onPress={this._eulaClick}></LinkButton>
                         </View>
-                        <View style={styles.infoContainer}>
-                            <PrimaryButton title=" Devam " onPress={this._primaryPress}/>
-                        </View>
                     </KeyboardAvoidingView>
+                    <View style={styles.infoContainer}>
+                        <PrimaryButton title=" Devam " onPress={this._primaryPress}/>
+                    </View>
                     <View style={styles.footerContainer}>
                         <Hr title="Zaten üye misin?"></Hr>
                         <SecondaryButton title="Giriş Yap" onPress={this._secondaryPress}></SecondaryButton>

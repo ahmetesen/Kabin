@@ -1,10 +1,10 @@
 import React from 'react';
 import {AppLoading, Asset, Font, Icon, Notifications} from 'expo';
-import {View, NetInfo} from 'react-native';
+import {View, NetInfo, StatusBar} from 'react-native';
 import {Button, createAppContainer, createStackNavigator, createSwitchNavigator, createBottomTabNavigator} from 'react-navigation';
 import {ActivationScreen,CreateEmailScreen,NameScreen, CreatePasswordScreen} from './screens/auth/create';
 import { EmailScreen, PasswordScreen } from './screens/auth/login';
-import {HomeScreen, ProfileScreen, SettingsScreen, EditAboutScreen, AddFlightScreen, BlockedUsersScreen } from './screens/ready';
+import {HomeScreen, ProfileScreen, SettingsScreen, EditAboutScreen, AddFlightScreen, BlockedUsersScreen, AllFlightsScreen } from './screens/ready';
 import ErrorManager from './core/ErrorManager';
 import LandingScreen from './screens/LandingScreen';
 import Firebase from './core/Firebase';
@@ -202,6 +202,9 @@ const LoggedNavigator = createStackNavigator({
     },
     BlockedUsers:{
         screen:BlockedUsersScreen
+    },
+    AllFlights:{
+        screen:AllFlightsScreen
     }
 },{
     initialRouteName: 'Logged',
@@ -255,6 +258,7 @@ export default class TopView extends React.Component{
     render(){
         return(
             <View style={{flex:1}}>
+                <StatusBar barStyle="dark-content"/> 
                 <AppContainer/>
                 <SpinnerContainer/>
                 <ErrorSheet/>

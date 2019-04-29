@@ -10,7 +10,7 @@ import SoftLine from '../../components/shapes/SoftLine';
 import UsersManager from '../../core/UsersManager';
 export default class SettingsScreen extends React.Component {
     static navigationOptions = {
-        headerTitleStyle: {color:'#283AD8',fontWeight:'200',fontFamily:'nunito-semibold',}
+        headerTitleStyle: {color:'#283AD8',fontWeight:'200',fontFamily:'nunito-semibold',fontSize:22}
     };
 
     constructor(props){
@@ -18,6 +18,7 @@ export default class SettingsScreen extends React.Component {
         this._primaryPress = this._primaryPress.bind(this);
         this.onAboutPress = this.onAboutPress.bind(this);
         this.onBlockedUsersPress = this.onBlockedUsersPress.bind(this);
+        this.goToAllFlights = this.goToAllFlights.bind(this);
         this.changeAboutCallback = this.changeAboutCallback.bind(this);
         this.onPrivacyPress = this.onPrivacyPress.bind(this);
         this.state={
@@ -55,12 +56,17 @@ export default class SettingsScreen extends React.Component {
         this.props.navigation.navigate('BlockedUsers');
     }
 
+    goToAllFlights(event){
+        this.props.navigation.navigate('AllFlights');
+    }
+
     onPrivacyPress(event){
         WebModalContainer.getInstance().openModal('https://kabinapp.firebaseapp.com/gizlilik.html');
         SpinnerContainer.getInstance().showSpinner();
     }
 
     render() {
+        //TODO: {Firebase.getInstance().auth.currentUser.displayName} bunu auth'tan değil, db'den oku.
         return(
             <ScrollView style={StyleSheet.mainContainer}>
                 <View style={styles.userContainer}>
@@ -80,6 +86,17 @@ export default class SettingsScreen extends React.Component {
                                     {Firebase.getInstance().activeUser.about}
                                 </TextBlock>
                             </View>
+                            <View style={styles.arrowView}>
+                                <Ionicons name="ios-arrow-forward" size={36} color='#878787' />
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                    <SoftLine topSpace={12} />
+                    <TouchableWithoutFeedback onPress={this.goToAllFlights}>
+                        <View style={styles.itemContainer}>
+                            <TextBlock low style={{flex:.9}}>
+                                Tüm Uçuşlarım
+                            </TextBlock>
                             <View style={styles.arrowView}>
                                 <Ionicons name="ios-arrow-forward" size={36} color='#878787' />
                             </View>

@@ -1,7 +1,7 @@
 const tabHeaderStyle={
     color:'#283AD8',
-    fontFamily:'nunito-semibold',
-    fontSize:20
+    fontFamily:'nunito-bold',
+    fontSize:22
 }
 
 export {tabHeaderStyle}

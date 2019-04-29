@@ -15,7 +15,7 @@ export default class AddFlightScreen extends React.Component{
     
     static navigationOptions={
         headerTitle:'Uçuş Ekle',
-        headerTitleStyle: {fontWeight:'200',fontFamily:'nunito-semibold',}
+        headerTitleStyle: {fontWeight:'200',fontFamily:'nunito-semibold',fontSize:22}
     }
 
     isExclusive = false;
@@ -39,7 +39,8 @@ export default class AddFlightScreen extends React.Component{
     }
 
     _firms = {
-        "thy":"tk",
+        "thy":"TK",
+        "doco":"TK",
         "atlasglb":"KK",
         "onurair":"8Q",
         "sunexpress":"XQ",
@@ -48,14 +49,16 @@ export default class AddFlightScreen extends React.Component{
     };
 
     _getFirmCode(email){
-        var code="";
+        var firm = this.props.navigation.getParam('firm','');
+        if(firm != '')
+            return firm;
         var splittedWithAt = email.split("@");
         if(splittedWithAt.length>0){
             var splittedWithDot = splittedWithAt[1].split(".");
             if(splittedWithDot.length>0)
-                code = this._firms[splittedWithDot[0]];
+                firm = this._firms[splittedWithDot[0]];
         }
-        return code;
+        return firm;
     }
 
     _checkFlightCode(code){

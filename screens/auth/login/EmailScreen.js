@@ -82,10 +82,10 @@ export default class CreateEmailScreen extends React.Component{
                                 placeholder='Eposta adresin nedir?'
                             />
                         </View>
-                        <View style={styles.infoContainer}>
-                            <PrimaryButton title=" Devam " onPress={this._primaryPress}/>
-                        </View>
                     </KeyboardAvoidingView>
+                    <View style={styles.infoContainer}>
+                        <PrimaryButton title=" Devam " onPress={this._primaryPress}/>
+                    </View>
                     <View style={styles.footerContainer}>
                         <Hr title="Henüz kaydolmadın mı?"></Hr>
                         <SecondaryButton title="Üye Ol" onPress={this._secondaryPress}></SecondaryButton>

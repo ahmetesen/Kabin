@@ -72,10 +72,10 @@ export default class NameScreen extends React.Component{
 
                             />
                         </View>
-                        <View style={styles.infoContainer}>
-                            <PrimaryButton title=" Devam " onPress={this._primaryPress}/>
-                        </View>
                     </KeyboardAvoidingView>
+                    <View style={styles.infoContainer}>
+                        <PrimaryButton title=" Devam " onPress={this._primaryPress}/>
+                    </View>
                     <View style={styles.footerContainer}>
                         <Hr title="Zaten üye misin?"></Hr>
                         <SecondaryButton title="Giriş Yap" onPress={this._secondaryPress}></SecondaryButton>

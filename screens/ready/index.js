@@ -3,6 +3,7 @@ import SettingsScreen from './SettingsScreen';
 import ProfileScreen from './ProfileScreen';
 import AddFlightScreen from './AddFlightScreen';
 import EditAboutScreen from './EditAboutScreen';
-import BlockedUsersScreen from './BlockedUsersScreen'
+import BlockedUsersScreen from './BlockedUsersScreen';
+import AllFlightsScreen from './AllFlightsScreen';
 
-export { HomeScreen,SettingsScreen,ProfileScreen, AddFlightScreen, EditAboutScreen, BlockedUsersScreen }
+export { HomeScreen,SettingsScreen,ProfileScreen, AddFlightScreen, EditAboutScreen, BlockedUsersScreen, AllFlightsScreen }
