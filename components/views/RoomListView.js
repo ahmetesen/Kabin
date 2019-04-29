@@ -163,8 +163,10 @@ export default class RoomListView extends React.Component{
 const styles = StyleSheet.create({
     containerView:{
         flex:1,
-        height:92,
-        padding:12,
+        height:86,
+        paddingHorizontal:12,
+        paddingVertical:10,
+
         flexDirection:'row'
     },
     swipeoutStyle:{

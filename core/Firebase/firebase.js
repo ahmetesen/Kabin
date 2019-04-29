@@ -5,6 +5,7 @@ import 'firebase/functions';
 import {TEST_PASSWORD} from '../../constants/global-strings';
 import PushSheet from '../../components/views/PushSheet';
 import { Permissions, Notifications } from 'expo';
+import UsersManager from '../UsersManager';
 
 const signInWithEmailAndPasswordErrors = {
     "auth/invalid-email":"E-posta adresinde bir hata var. Kontrol eder misin?",
@@ -277,6 +278,8 @@ export default class Firebase {
                     title = "Kabin İletişim"
                 else
                     title = snapShot.key.split('+')[1];
+                if(!UsersManager.instance.rooms[snapShot.key] || UsersManager.instance.rooms[snapShot.key].archived||UsersManager.instance.rooms[snapShot.key].deleted)
+                    return;
                 PushSheet.getInstance().showSheet(title+" - "+message);
             }
         });
@@ -433,7 +436,7 @@ export default class Firebase {
 
     deleteFlight(roomName){
         return new Promise((resolve,reject)=>{
-            this.deleteRoom({roomName}).then((response)=>{
+            this.deleteRoom({roomName,displayName:this.auth.currentUser.displayName}).then((response)=>{
                 if(response.data.statusCode==200)
                     return resolve();
                 else
