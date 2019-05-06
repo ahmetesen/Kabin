@@ -190,8 +190,15 @@ export default class Firebase {
         return this.auth.currentUser.email;
     }
 
+    _handleNotification = notification => {
+        Notifications.dismissAllNotificationsAsync();
+      };
+
     async getUser(success,fail){
         await this.registerForPushNotificationsAsync();
+        this._notificationSubscription = Notifications.addListener(
+            this._handleNotification
+          );
         var displayName = this.auth.currentUser.displayName;
         this.saveNewUser({displayName,token:this._pushToken}).then((result)=>{
             if(result)
