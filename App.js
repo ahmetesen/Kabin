@@ -4,7 +4,7 @@ import {View, NetInfo, StatusBar} from 'react-native';
 import {Button, createAppContainer, createStackNavigator, createSwitchNavigator, createBottomTabNavigator} from 'react-navigation';
 import {ActivationScreen,CreateEmailScreen,NameScreen, CreatePasswordScreen} from './screens/auth/create';
 import { EmailScreen, PasswordScreen } from './screens/auth/login';
-import {HomeScreen, ProfileScreen, SettingsScreen, EditAboutScreen, AddFlightScreen, BlockedUsersScreen, AllFlightsScreen } from './screens/ready';
+import {HomeScreen, ProfileScreen, SettingsScreen, EditAboutScreen, AddFlightScreen, BlockedUsersScreen, AllFlightsScreen, RoomSettingsScreen } from './screens/ready';
 import ErrorManager from './core/ErrorManager';
 import LandingScreen from './screens/LandingScreen';
 import Firebase from './core/Firebase';
@@ -193,6 +193,9 @@ const LoggedNavigator = createStackNavigator({
     },
     Room:{
         screen:RoomScreen
+    },
+    RoomSettings:{
+        screen:RoomSettingsScreen
     },
     Ad:{
         screen:AdScreen

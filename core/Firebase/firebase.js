@@ -161,6 +161,22 @@ export default class Firebase {
         }
     }
 
+    getAllusersOfTheRoom(roomName){
+        if(roomName == '0'){
+            roomName = "bot-"+this.auth.currentUser.uid;
+        }
+        return new Promise((resolve,reject)=>{
+            this.db.ref('rooms/'+roomName+'/users').once('value',(snapShot)=>{
+                if(snapShot)
+                    return resolve(snapShot.val());
+                else
+                    return reject(new Error("no message here"));
+            },(error)=>{
+                return reject(error);
+            });
+        });
+    }
+
     getAllMessagesOfTheRoom(roomName){
         if(roomName == '0'){
             roomName = "bot-"+this.auth.currentUser.uid;
@@ -177,9 +193,11 @@ export default class Firebase {
         });
     }
 
-    addRoom(timeStamp,flightCode,success,fail){
+    //addRoom(timeStamp,flightCode,success,fail){
+    addRoom(timeStamp,flightCode,year,month,day,success,fail){
         var displayName = this.auth.currentUser.displayName;
-        this.addOrJoinRoom({timeStamp,flightCode,displayName}).then((result) => {
+        //this.addOrJoinRoom({timeStamp,flightCode,displayName}).then((result) => {
+        this.addOrJoinRoom({timeStamp,flightCode,displayName,year,month,day}).then((result) => {
             success(result);
         }).catch((error)=>{
             fail(error.message);

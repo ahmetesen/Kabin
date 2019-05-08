@@ -1,12 +1,21 @@
 import React from 'react';
-import {View, KeyboardAvoidingView, Platform, Clipboard} from 'react-native';
+import {View, KeyboardAvoidingView, Platform, Clipboard,TouchableOpacity} from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import Firebase from '../../core/Firebase';
 import UsersManager from '../../core/UsersManager';
 import SpinnerContainer from '../../components/views/SpinnerContainer';
+import TextBlock from '../../components/texts/TextBlock';
 export default class RoomScreen extends React.Component {
     static navigationOptions = ({navigation})=>({
         title: `${navigation.state.params.title}`,
+        headerTitle:<TouchableOpacity onPress={(evt)=>{
+            navigation.navigate('RoomSettings',{title:navigation.state.params.title,room:navigation.state.params.room});
+        }}>
+            <TextBlock big bold blue>
+                {navigation.state.params.title}
+            </TextBlock>
+        </TouchableOpacity>
+        ,
         headerTitleStyle: {fontWeight:'200',fontFamily:'nunito-semibold',fontSize:22}
     });
     _initialState={
@@ -60,7 +69,6 @@ export default class RoomScreen extends React.Component {
     _firstChildAttempt = true;
 
     messageIncoming(key,message){
-        //TODO: Eğer roomscreen unmounted durumundaysa, return et.
         if(this._firstChildAttempt){
             this._firstChildAttempt = false;
             return;
@@ -233,6 +241,7 @@ export default class RoomScreen extends React.Component {
             return(
                 <View style={{marginBottom:20, flex:1}}>
                     <GiftedChat 
+                        placeholder="Mesaj yaz..."
                         renderUsernameOnMessage={true}
                         onLongPress={this._longPress}
                         onSend={this.sendPressed}

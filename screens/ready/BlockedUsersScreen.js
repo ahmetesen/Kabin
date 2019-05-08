@@ -66,13 +66,15 @@ export default class BlockedUsersScreen extends React.Component {
             listItems.push(<ListItem namePress={this._onNamePress} iconPress={this._onIconPress} key={listItems.length} id={item.id} displayName={item.displayName}/>)
         })
         return(
-            <ScrollView style={StyleSheet.mainContainer}>
-                {listItems.length>0?listItems:(
-                    <View style={{flex:1, paddingTop:24, alignItems:'center'}}>
-                        <TextBlock low dark>Kimseyi engellemedin.</TextBlock>
-                    </View>
-                    )
-                }
+            <ScrollView>
+                <View style={styles.mainContainer}>
+                    {listItems.length>0?listItems:(
+                        <View style={{flex:1, paddingTop:24, alignItems:'center'}}>
+                            <TextBlock low dark>Kimseyi engellemedin.</TextBlock>
+                        </View>
+                        )
+                    }
+                </View>
             </ScrollView>
         );
     }

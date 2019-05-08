@@ -77,9 +77,16 @@ export default class RoomListView extends React.Component{
             title = data[1];
             date = "Uçuş tarihi: "
         }
-
-        date += msToDate(bulkDate);
-
+        if(bulkDate.toString().length == 8){
+            bulkDate = bulkDate.toString();
+            var year = bulkDate.substr(0,4);
+            var month = bulkDate.substr(4,2);
+            var day = bulkDate.substr(6,2);
+            bulkDate = day+"."+month+"."+year;
+            date += bulkDate;
+        }
+        else
+            date += msToDate(bulkDate);
         return(
             <Swipeout autoClose={true} disabled={disableSwipe} style={styles.swipeoutStyle} left={this.swipeoutButtons} right={this.swipeoutButtons}>
                 <View style={{flex:1}}>

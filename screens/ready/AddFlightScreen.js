@@ -91,7 +91,8 @@ export default class AddFlightScreen extends React.Component{
         if(flightCode)
         {
             SpinnerContainer.getInstance().showSpinner();
-            Firebase.getInstance().addRoom(timeStamp,flightCode,(data)=>{
+            //Firebase.getInstance().addRoom(timeStamp,flightCode,(data)=>{
+            Firebase.getInstance().addRoom(timeStamp,flightCode,dateParts[2],dateParts[1],dateParts[0],(data)=>{
                 SpinnerContainer.getInstance().hideSpinner(()=>{
                     if(data.status=200)
                         this.props.navigation.goBack();
