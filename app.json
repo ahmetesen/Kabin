@@ -37,7 +37,10 @@
     },
     "android": {
       "package": "com.aee.kabin",
-      "permissions":["VIBRATE","NOTIFICATIONS"],
+      "permissions": [
+        "VIBRATE",
+        "NOTIFICATIONS"
+      ],
       "versionCode": 8,
       "googleServicesFile": "./google-services.json",
       "icon": "./assets/images/icon.png"

@@ -23,7 +23,6 @@ export default class AddFlightScreen extends React.Component{
 
     constructor(props){
         super(props);
-
         this.airlineCode = this._getFirmCode(Firebase.getInstance().getActiveUserEmail());
         if(this.airlineCode != ""){
             this.isExclusive = true;

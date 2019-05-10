@@ -16,7 +16,9 @@ import AdScreen from './screens/ready/AdScreen';
 import PushSheet from './components/views/PushSheet';
 import ErrorSheet from './components/views/ErrorSheet';
 import WebModalContainer from './components/views/WebModalContainer';
+import PlaygroundContainer from './components/views/PlaygroundContainer';
 
+var playgroundMode = false;
 class App extends React.Component {
     collectedLoaders=0;
     startPage = "Landing";
@@ -236,8 +238,10 @@ export default class TopView extends React.Component{
         this.handleFirstConnectivityChange = this.handleFirstConnectivityChange.bind(this);
     }
     componentDidMount(){
-        this.showConnectionError();
-        NetInfo.addEventListener('connectionChange', this.handleFirstConnectivityChange);
+        if(!playgroundMode){
+            this.showConnectionError();
+            NetInfo.addEventListener('connectionChange', this.handleFirstConnectivityChange);
+        }
     }
 
     showConnectionError(){
@@ -259,16 +263,24 @@ export default class TopView extends React.Component{
     }
 
     render(){
-        return(
-            <View style={{flex:1}}>
-                <StatusBar barStyle="dark-content"/> 
-                <AppContainer/>
-                <SpinnerContainer/>
-                <ErrorSheet/>
-                <PushSheet/>
-                <WebModalContainer/>
-            </View>
-        )
+        if(playgroundMode){
+            return(
+                <PlaygroundContainer style={{flex:1}}>
+
+                </PlaygroundContainer>
+            )
+        }
+        else
+            return(
+                <View style={{flex:1}}>
+                    <StatusBar barStyle="dark-content"/> 
+                    <AppContainer/>
+                    <SpinnerContainer/>
+                    <ErrorSheet/>
+                    <PushSheet/>
+                    <WebModalContainer/>
+                </View>
+            )
     }
 }
 

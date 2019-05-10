@@ -29,7 +29,16 @@ export default class AllFlightsScreen extends React.Component {
             if(rawList[key].archived)
                 rawList[key].name += " (Arşivlendi)";
             rawList[key].date = key.split('+')[0];
-            rawList[key].formattedDate = msToDate(rawList[key].date);
+            if(rawList[key].date.length==8){
+                var year = rawList[key].date.substr(0,4);
+                var month = rawList[key].date.substr(4,2);
+                var day = rawList[key].date.substr(6,2);
+                rawList[key].formattedDate = day+"."+month+"."+year;
+            }
+            else{
+                rawList[key].formattedDate = msToDate(rawList[key].date);
+            }
+            
             this._flightList.push(rawList[key]);
         }
         this._flightList.reverse();
