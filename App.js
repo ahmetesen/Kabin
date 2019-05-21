@@ -1,7 +1,7 @@
 import React from 'react';
 import {AppLoading, Asset, Font, Icon, Notifications} from 'expo';
 import {View, NetInfo, StatusBar} from 'react-native';
-import {Button, createAppContainer, createStackNavigator, createSwitchNavigator, createBottomTabNavigator} from 'react-navigation';
+import {createAppContainer, createStackNavigator, createSwitchNavigator, createBottomTabNavigator} from 'react-navigation';
 import {ActivationScreen,CreateEmailScreen,NameScreen, CreatePasswordScreen} from './screens/auth/create';
 import { EmailScreen, PasswordScreen } from './screens/auth/login';
 import {HomeScreen, ProfileScreen, SettingsScreen, EditAboutScreen, AddFlightScreen, BlockedUsersScreen, AllFlightsScreen, RoomSettingsScreen } from './screens/ready';
@@ -17,6 +17,8 @@ import PushSheet from './components/views/PushSheet';
 import ErrorSheet from './components/views/ErrorSheet';
 import WebModalContainer from './components/views/WebModalContainer';
 import PlaygroundContainer from './components/views/PlaygroundContainer';
+import { Platform } from 'expo-core';
+import {AppState} from 'react-native';
 
 var playgroundMode = false;
 class App extends React.Component {
@@ -28,17 +30,23 @@ class App extends React.Component {
     }
 
     componentDidMount(){
-        this._notificationSubscription = Notifications.addListener(this._handleNotification);
+        Notifications.dismissAllNotificationsAsync();
+        Notifications.setBadgeNumberAsync(0);
+        AppState.addEventListener("change",this._handleStateChange);
     }
 
-    _handleNotification = (notification)=>{
-        //TODO
-    };
+    _handleStateChange(nextAppState){
+        if(nextAppState === 'active') {
+            Notifications.setBadgeNumberAsync(0);
+            if(Platform.OS === "android"){
+                Notifications.dismissAllNotificationsAsync();
+            }
+        }
+    }
 
     componentWillMount(){
         Firebase.initializeApp();
         checkStateChangedAndUnsubscribe = Firebase.getInstance().auth.onAuthStateChanged((user)=>{
-            //TODO: Kullanıcı verification mail'ini onayladı mı check et.
             if(user && user.emailVerified)
                 this.startPage = "Main";
             checkStateChangedAndUnsubscribe();

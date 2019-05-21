@@ -6,6 +6,8 @@ import {TEST_PASSWORD} from '../../constants/global-strings';
 import PushSheet from '../../components/views/PushSheet';
 import { Permissions, Notifications } from 'expo';
 import UsersManager from '../UsersManager';
+import { Platform } from 'expo-core';
+import {AppState} from 'react-native';
 
 const signInWithEmailAndPasswordErrors = {
     "auth/invalid-email":"E-posta adresinde bir hata var. Kontrol eder misin?",
@@ -209,8 +211,13 @@ export default class Firebase {
     }
 
     _handleNotification = notification => {
-        Notifications.dismissAllNotificationsAsync();
-      };
+        if(AppState.currentState==="active"){
+            if(Platform.OS==="android")
+                Notifications.dismissAllNotificationsAsync();
+            else if(Platform.OS ==="ios")
+                Notifications.setBadgeNumberAsync(0);
+        }
+    };
 
     async getUser(success,fail){
         await this.registerForPushNotificationsAsync();
@@ -519,6 +526,7 @@ export default class Firebase {
         await Notifications.getExpoPushTokenAsync().then((data)=>{
             Firebase.getInstance()._pushToken = data;
         }).catch((error)=>{
+            console.log(error);
         });
     }
 
