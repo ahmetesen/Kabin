@@ -32,6 +32,7 @@ export default class RoomScreen extends React.Component {
         this.messageIncoming = this.messageIncoming.bind(this);
         this._currentUser = Firebase.getInstance().auth.currentUser.uid;
         this._longPress = this._longPress.bind(this);
+        this.avatarPressed = this.avatarPressed.bind(this);
     }
 
     _messages = [];
@@ -83,7 +84,7 @@ export default class RoomScreen extends React.Component {
                         text: this._messages[this._messages.length-1].text,
                         createdAt: this._messages[this._messages.length-1].messageDate,
                         system:this._messages[this._messages.length-1].system,
-                        user: this._messages[this._messages.length-1].user
+                        user: this._messages[this._messages.length-1].user,
                     }),
                 };
             });
@@ -116,18 +117,32 @@ export default class RoomScreen extends React.Component {
                     return resolve();
                 //TODO: user eğer chatteki son mesajı silerse, db'deki users/ altındaki ilgili chat odasının lastMessage property'sini de güncellemem gerekiyor.
 
-                this._messages.push({
-                    _id:key,
-                    text:value.message,
-                    createdAt:new Date(value.messageDate),
-                    system: (value.sender==sysId)?true:false,
-                    user:{
-                        name: user.displayName,
-                        _id:value.sender
-                    },
+                UsersManager.instance.getAvatar(value.sender).then((data)=>{
+                    this._messages.push({
+                        _id:key,
+                        text:value.message,
+                        createdAt:new Date(value.messageDate),
+                        system: (value.sender==sysId)?true:false,
+                        user:{
+                            name: user.displayName,
+                            _id:value.sender,
+                            avatar:data.avatar
+                        },
+                    });
+                    return resolve();
+                }).catch((error)=>{
+                    this._messages.push({
+                        _id:key,
+                        text:value.message,
+                        createdAt:new Date(value.messageDate),
+                        system: (value.sender==sysId)?true:false,
+                        user:{
+                            name: user.displayName,
+                            _id:value.sender
+                        },
+                    });
+                    return resolve();
                 });
-
-                return resolve();
             }).catch((error)=>{
                 return reject(error);
             })
@@ -231,6 +246,12 @@ export default class RoomScreen extends React.Component {
         });
     }
 
+    avatarPressed(user){
+        if(user._id === "0" || user._id === 0)
+            return;
+        this.props.navigation.navigate('Visitor',{id:user._id,title:user.name});
+    }
+
     render(){
         if(this.state.loading)
             return null;
@@ -241,6 +262,7 @@ export default class RoomScreen extends React.Component {
             return(
                 <View style={{marginBottom:20, flex:1}}>
                     <GiftedChat 
+                        onPressAvatar={this.avatarPressed}
                         placeholder="Mesaj yaz..."
                         renderUsernameOnMessage={true}
                         onLongPress={this._longPress}

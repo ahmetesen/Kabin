@@ -9,17 +9,21 @@ import TextBlock from '../../components/texts/TextBlock';
 import SoftLine from '../../components/shapes/SoftLine';
 import UsersManager from '../../core/UsersManager';
 export default class SettingsScreen extends React.Component {
-    static navigationOptions = {
-        headerTitleStyle: {color:'#283AD8',fontWeight:'200',fontFamily:'nunito-semibold',fontSize:22}
-    };
+    static navigationOptions = (navigation)=>({
+        headerTitleStyle: {color:'#283AD8',fontWeight:'200',fontFamily:'nunito-semibold',fontSize:22},
+        headerTitle:
+            <View style={{flex:1, alignItems:'center'}}>
+                <TextBlock big bold blue>
+                    Ayarlar
+                </TextBlock>
+            </View>
+    });
 
     constructor(props){
         super(props);
         this._primaryPress = this._primaryPress.bind(this);
-        this.onAboutPress = this.onAboutPress.bind(this);
         this.onBlockedUsersPress = this.onBlockedUsersPress.bind(this);
         this.goToAllFlights = this.goToAllFlights.bind(this);
-        this.changeAboutCallback = this.changeAboutCallback.bind(this);
         this.onPrivacyPress = this.onPrivacyPress.bind(this);
         this.state={
             about: Firebase.getInstance().activeUser.about
@@ -42,16 +46,6 @@ export default class SettingsScreen extends React.Component {
         });
     }
 
-    onAboutPress(event){
-        this.props.navigation.navigate('EditAbout', {callBack:this.changeAboutCallback});
-    }
-    
-    changeAboutCallback(){
-        this.setState({
-            about: Firebase.getInstance().activeUser.about,
-        });
-    }
-
     onBlockedUsersPress(event){
         this.props.navigation.navigate('BlockedUsers');
     }
@@ -70,28 +64,6 @@ export default class SettingsScreen extends React.Component {
         return(
             <ScrollView style={StyleSheet.mainContainer}>
                 <View style={styles.userContainer}>
-                    <View style={styles.titleContainer}>
-                        <TextBlock big bold blue>
-                            {Firebase.getInstance().auth.currentUser.displayName}
-                        </TextBlock>
-                    </View>
-                    <SoftLine topSpace={12} />
-                    <TouchableWithoutFeedback onPress={this.onAboutPress}>
-                        <View style={styles.itemContainer}>
-                            <View style={{flex:.9}}>
-                                <TextBlock dark bold>
-                                    Hakkımda
-                                </TextBlock>
-                                <TextBlock low>
-                                    {Firebase.getInstance().activeUser.about}
-                                </TextBlock>
-                            </View>
-                            <View style={styles.arrowView}>
-                                <Ionicons name="ios-arrow-forward" size={36} color='#878787' />
-                            </View>
-                        </View>
-                    </TouchableWithoutFeedback>
-                    <SoftLine topSpace={12} />
                     <TouchableWithoutFeedback onPress={this.goToAllFlights}>
                         <View style={styles.itemContainer}>
                             <TextBlock low style={{flex:.9}}>
@@ -126,15 +98,24 @@ export default class SettingsScreen extends React.Component {
                         </View>
                     </TouchableWithoutFeedback>
                     <SoftLine topSpace={12} />
-
-
                     <View style={styles.itemContainer}>
                         <TextBlock low style={{flex:.8}}>
-                            İçerik versiyon numarası 
+                            Uygulama sürümü 
                         </TextBlock>
                         <View style={{...styles.arrowView,flex:.2}}>
                             <TextBlock dark>
-                                12
+                                1.4
+                            </TextBlock>
+                        </View>
+                    </View>
+                    <SoftLine topSpace={12} />
+                    <View style={styles.itemContainer}>
+                        <TextBlock low style={{flex:.8}}>
+                            İçerik sürümü 
+                        </TextBlock>
+                        <View style={{...styles.arrowView,flex:.2}}>
+                            <TextBlock dark>
+                                14
                             </TextBlock>
                         </View>
                     </View>
@@ -156,11 +137,6 @@ const styles = StyleSheet.create({
     userContainer:{
         alignItems:'stretch',
         
-    },
-    titleContainer:{
-        alignItems:'flex-start',
-        paddingTop:16,
-        paddingHorizontal:12
     },
     itemContainer:{
         alignItems:'center',

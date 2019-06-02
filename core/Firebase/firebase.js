@@ -2,6 +2,7 @@ import app from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 import 'firebase/functions';
+import 'firebase/storage';
 import {TEST_PASSWORD} from '../../constants/global-strings';
 import PushSheet from '../../components/views/PushSheet';
 import { Permissions, Notifications } from 'expo';
@@ -121,6 +122,7 @@ export default class Firebase {
         this.auth = app.auth();
         this.funcs = app.functions();
         this.db = app.database();
+        this.storage = app.storage();
         //this.funcs.useFunctionsEmulator("http://localhost:8010")
         this.addOrJoinRoom = this.funcs.httpsCallable('addOrJoinRoom');
         this.saveNewUser = this.funcs.httpsCallable('saveNewUser');
@@ -139,6 +141,8 @@ export default class Firebase {
         this.archiveRoom = this.funcs.httpsCallable('archiveRoom');
         this.dearchiveRoom = this.funcs.httpsCallable('dearchiveRoom');
         this.deleteRoom = this.funcs.httpsCallable('deleteRoom');
+        this.setNewDisplayName = this.funcs.httpsCallable('setNewDisplayName');
+        this.getProfileDetailsForGuest = this.funcs.httpsCallable('getProfileDetailsForGuest');
         Firebase._instance = this;
     }
 
@@ -229,7 +233,7 @@ export default class Firebase {
             if(result)
             {
                 this._userPushToken = result.data.user.token;
-                
+                UsersManager.instance.setMeAfterLoggedIn(this.auth.currentUser.uid,result.data.user);
                 success(result.data.user);
             }
         }).catch((error)=>{
@@ -540,5 +544,51 @@ export default class Firebase {
                 });
             });
         }
+    }
+
+    setDisplayName(name){
+        return new Promise((resolve,reject)=>{
+            return this.setNewDisplayName({displayName:name}).then((response)=>{
+                if(response.data.statusCode==200)
+                    return resolve();
+                else
+                    return reject(response.data.error);
+            }).catch((error)=>{
+                return reject(error);
+            });
+        })
+    }
+
+    setProfilePicture(blob){
+        return new Promise((resolve,reject)=>{
+            var ref = this.storage.ref('avatars/users/'+this.auth.currentUser.uid);
+            ref.put(blob).then((data)=>{
+                return resolve();
+            }).catch((error)=>{
+                return reject(error);
+            });
+        });
+    }
+
+    getAvatar(key){
+        return new Promise((resolve,reject)=>{
+            this.storage.ref('avatars/users/'+key).getDownloadURL().then((url)=>{
+                if(url && url!==""){
+                    return resolve(url);
+                }
+                else
+                    return reject("no url available");
+            }).catch((error)=>{
+                return reject();
+            });
+        });
+    }
+
+    getProfileDetails(id){
+        return this.getProfileDetailsForGuest({userId:id}).then((response)=>{
+            return response;
+        }).catch((response)=>{
+            return response;
+        })
     }
 }

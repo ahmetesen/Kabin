@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
         color: '#1D1D1D'
     },
     blue: {
-        color: '#283ad8'
+        color: '#283ad8',
     },
     text:{
         fontFamily: 'nunito-light',

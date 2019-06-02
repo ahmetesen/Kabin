@@ -4,7 +4,7 @@ import {View, NetInfo, StatusBar} from 'react-native';
 import {createAppContainer, createStackNavigator, createSwitchNavigator, createBottomTabNavigator} from 'react-navigation';
 import {ActivationScreen,CreateEmailScreen,NameScreen, CreatePasswordScreen} from './screens/auth/create';
 import { EmailScreen, PasswordScreen } from './screens/auth/login';
-import {HomeScreen, ProfileScreen, SettingsScreen, EditAboutScreen, AddFlightScreen, BlockedUsersScreen, AllFlightsScreen, RoomSettingsScreen } from './screens/ready';
+import {HomeScreen, ProfileScreen, SettingsScreen, EditAboutScreen, ChangeNameScreen, AddFlightScreen, BlockedUsersScreen, AllFlightsScreen, RoomSettingsScreen, VisitorScreen } from './screens/ready';
 import ErrorManager from './core/ErrorManager';
 import LandingScreen from './screens/LandingScreen';
 import Firebase from './core/Firebase';
@@ -30,7 +30,8 @@ class App extends React.Component {
     }
 
     componentDidMount(){
-        Notifications.dismissAllNotificationsAsync();
+        if(Platform.OS==="android")
+            Notifications.dismissAllNotificationsAsync();
         Notifications.setBadgeNumberAsync(0);
         AppState.addEventListener("change",this._handleStateChange);
     }
@@ -117,7 +118,7 @@ const ProfileStack = createStackNavigator(
     },
     {        
         defaultNavigationOptions:{
-            headerTitle:'Profil',
+            headerTitle:'Ben',
             headerTitleStyle:{
                 ...tabHeaderStyle,
             }
@@ -172,9 +173,9 @@ const SettingsStack = createStackNavigator(
 
 const LoggedTab = createBottomTabNavigator(
     {
-        /*Profile: {
+        Profile: {
             screen:ProfileStack,
-        },*/
+        },
         Home: {
             screen:HomeStack,
         },
@@ -207,11 +208,17 @@ const LoggedNavigator = createStackNavigator({
     RoomSettings:{
         screen:RoomSettingsScreen
     },
+    Visitor:{
+        screen:VisitorScreen
+    },
     Ad:{
         screen:AdScreen
     },
     EditAbout:{
         screen:EditAboutScreen
+    },
+    ChangeName:{
+        screen:ChangeNameScreen
     },
     BlockedUsers:{
         screen:BlockedUsersScreen

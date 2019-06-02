@@ -21,10 +21,11 @@ export default class NameScreen extends React.Component{
         this._secondaryPress = this._secondaryPress.bind(this);
     }
     _onNameTextChange(value){
+        if(value.length>46)
+            return;
         this.setState({name:value});
         if(this.state.name =="")
             this.setState({errorMessage:""});
-
     }
     _onSubmit(e){
         this.nameComplete();

@@ -12,6 +12,7 @@ export default class UsersManager{
             throw new Error("You cannot create instance via constructor.");
     }
     users={};
+    avatars={};
     blockedUsers = {};
     rooms={};
     me={
@@ -25,10 +26,11 @@ export default class UsersManager{
             return false;
     }
 
-    setMeAfterLoggedIn(key,displayName){
+    setMeAfterLoggedIn(key,user){
         UsersManager.instance.me = {
-            id:key,
-            displayName:displayName
+            uid:key,
+            displayName:user.displayName,
+            about:user.about
         };
     }
 
@@ -40,6 +42,64 @@ export default class UsersManager{
     removeFromBlockedList(key){
         if(UsersManager.instance.blockedUsers[key])
             UsersManager.instance.blockedUsers[key] = false;
+    }
+
+    setDisplayName(displayName){
+        return new Promise((resolve,reject)=>{
+            return Firebase.getInstance().setDisplayName(displayName).then(()=>{
+                UsersManager.instance.me.displayName = displayName;
+                return resolve();
+            }).catch((error)=>{
+                return reject(error);
+            })
+        });
+    }
+
+    setAbout(about){
+        return new Promise((resolve,reject)=>{
+            return Firebase.getInstance().saveAboutText(about).then(()=>{
+                UsersManager.instance.me.about = about;
+                return resolve();
+            }).catch((error)=>{
+                return reject(error);
+            })
+        });
+    }
+
+    setMyAvatar(avatar,localUri){
+        return new Promise((resolve,reject)=>{
+            Firebase.getInstance().setProfilePicture(avatar).then(()=>{
+                UsersManager.instance.avatars[UsersManager.instance.me.uid]=localUri;
+                return resolve();
+            }).catch((error)=>{
+                return reject(error);
+            })
+        });
+    }
+
+    getAvatar(key){
+        return new Promise((resolve,reject)=>{
+            if(UsersManager.instance.avatars[key])
+                return resolve({avatar:UsersManager.instance.avatars[key],newKey:key});
+            else{
+                return Firebase.getInstance().getAvatar(key).then((avatar) => {
+                    UsersManager.instance.avatars[key]=avatar;
+                    return resolve({avatar:avatar,newKey:key});
+                }).catch((error)=>{
+                    return reject(error);
+                });
+            }
+        });
+    }
+
+    getMyAvatar(){
+        return new Promise((resolve,reject)=>{
+            return UsersManager.instance.getAvatar(UsersManager.instance.me.uid).then((avatar)=>{
+                return resolve(avatar);
+            }).catch((error)=>{
+                return reject(error);
+            });
+        });
     }
 
     getUserName(key){
@@ -55,6 +115,16 @@ export default class UsersManager{
                 })
             }
         });
+    }
+
+    getProfileDetails(key){
+        return new Promise((resolve,reject)=>{
+            return Firebase.getInstance().getProfileDetails(key).then((data)=>{
+                return resolve(data);
+            }).catch((error)=>{
+                return reject(error);
+            });
+        })
     }
 }
 

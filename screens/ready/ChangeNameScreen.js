@@ -18,22 +18,27 @@ export default class EditAboutScreen extends React.Component {
         super(props);
         this._primaryPress = this._primaryPress.bind(this);
         this._onAboutTextChange = this._onAboutTextChange.bind(this);
-        this.state={initialText:UsersManager.instance.me.about};
+        this.state={initialText:UsersManager.instance.me.displayName};
 
     }
 
+
+
     componentWillMount(){
-        this.changeAboutFunction = this.props.navigation.getParam('callBack',undefined);
+        this.changeNameFunction = this.props.navigation.getParam('callBack',undefined);
     }
     
     _primaryPress(event){
-        var callback = this.changeAboutFunction;
+        var callback = this.changeNameFunction;
         SpinnerContainer.getInstance().showSpinner();
-        UsersManager.instance.setAbout(this.state.initialText).then((data)=>{
+
+
+        UsersManager.instance.setDisplayName(this.state.initialText).then((data)=>{
             SpinnerContainer.getInstance().hideSpinner(()=>{
                 if(callback)
                     callback();
                 this.props.navigation.goBack();
+                
             }
         )}).catch(
         (error)=>{
@@ -44,27 +49,20 @@ export default class EditAboutScreen extends React.Component {
     newLineCounter=0;
 
     _onAboutTextChange(value){
+        if(value.length>46)
+            return;
         var length = value.split("\n").length;
-        if(length>4)
+        if(length>1)
             return;
         this.setState({initialText:value});
     }
 
     render() {
-        /* Go ahead and delete ExpoConfigView and replace it with your
-        * content, we just wanted to give you a quick view of your config */
         return(
             <ScrollView style={StyleSheet.mainContainer}>
                 <View style={styles.userContainer}>
-                    <View style={styles.itemContainer}>
-                        <View style={{flex:.9}}>
-                            <TextBlock dark bold>
-                                Hakkımda
-                            </TextBlock>
-                        </View>
-                    </View>
                     <View>
-                        <TextBox autoFocus={true} maxLength={255} textAlignVertical='top' multiline={true} dark value={this.state.initialText} onChangeText={this._onAboutTextChange}></TextBox>
+                        <TextBox autoFocus={true} maxLength={255} textAlignVertical='top' dark value={this.state.initialText} onChangeText={this._onAboutTextChange}></TextBox>
                     </View>
                 </View>
                 <View style={{paddingTop:24 ,flex:1, justifyContent:'flex-end', alignItems:'center', paddingBottom:24}}>
@@ -82,7 +80,7 @@ const styles = StyleSheet.create({
     },
     userContainer:{
         alignItems:'stretch',
-        
+        marginTop:24
     },
     titleContainer:{
         alignItems:'flex-start',

@@ -9,7 +9,7 @@ import SoftLine from '../../components/shapes/SoftLine'
 export default class RoomScreen extends React.Component {
     static navigationOptions = ({navigation})=>({
         title: `${navigation.state.params.title}`,
-        headerTitleStyle: {fontWeight:'200',fontFamily:'nunito-semibold',fontSize:24}
+        headerTitleStyle: {fontWeight:'200',fontFamily:'nunito-semibold',fontSize:22}
     });
 
     constructor(props){
@@ -45,7 +45,10 @@ export default class RoomScreen extends React.Component {
         });
     }
 
-    _onNamePress(id){
+    _onNamePress(id,title){
+        if(id === Firebase.getInstance().auth.currentUser.uid)
+            return;
+        this.props.navigation.navigate('Visitor',{id,title});
         //TODO: Go to profile when user click on the name.
     }
 
@@ -58,7 +61,7 @@ export default class RoomScreen extends React.Component {
         return(
             <ScrollView>
                 <View style={styles.mainContainer}>
-                    <TextBlock style={{marginTop:24,margin:12}} bold dark>Bu uçuştaki Diğer Görevliler:</TextBlock>
+                    <TextBlock style={{marginTop:24,margin:12}} bold dark>Bu uçuştaki görevliler:</TextBlock>
                     <SoftLine></SoftLine>
                     {listItems.length>1?listItems:(
                         <View style={{flex:1, paddingTop:24, alignItems:'center'}}>

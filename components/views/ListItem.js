@@ -17,7 +17,7 @@ export default class ListItem extends React.Component{
 
     _namePress(event){
         if(this.props.namePress)
-            this.props.namePress(this.props.id);
+            this.props.namePress(this.props.id,this.props.displayName);
     }
 
     render(){
