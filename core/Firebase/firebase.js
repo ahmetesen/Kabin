@@ -3,12 +3,10 @@ import 'firebase/auth';
 import 'firebase/database';
 import 'firebase/functions';
 import 'firebase/storage';
-import {TEST_PASSWORD} from '../../constants/global-strings';
 import PushSheet from '../../components/views/PushSheet';
 import { Permissions, Notifications } from 'expo';
 import UsersManager from '../UsersManager';
-import { Platform } from 'expo-core';
-import {AppState} from 'react-native';
+import {AppState, Platform} from 'react-native';
 
 const signInWithEmailAndPasswordErrors = {
     "auth/invalid-email":"E-posta adresinde bir hata var. Kontrol eder misin?",
@@ -112,10 +110,7 @@ export default class Firebase {
         return Firebase._instance;
     }
     static initializeApp(initializedAction=null){
-        if(Firebase._instance != null)
-            throw new Error("You have already initialized Firebase. You can use Firebase.getInstance()");
-        else
-            Firebase._instance = new Firebase();        
+        Firebase._instance = new Firebase();
     }
 
     async refreshAllFbInstances(){
@@ -123,7 +118,7 @@ export default class Firebase {
         this.funcs = app.functions();
         this.db = app.database();
         this.storage = app.storage();
-        //this.funcs.useFunctionsEmulator("http://localhost:8010")
+        this.funcs.useFunctionsEmulator("http://172.21.5.217:8010");
         this.addOrJoinRoom = this.funcs.httpsCallable('addOrJoinRoom');
         this.saveNewUser = this.funcs.httpsCallable('saveNewUser');
         this.getNameOfUser = this.funcs.httpsCallable('getNameOfUser');
@@ -143,8 +138,27 @@ export default class Firebase {
         this.deleteRoom = this.funcs.httpsCallable('deleteRoom');
         this.setNewDisplayName = this.funcs.httpsCallable('setNewDisplayName');
         this.getProfileDetailsForGuest = this.funcs.httpsCallable('getProfileDetailsForGuest');
+        this._saveDeviceToFirestore = this.funcs.httpsCallable('a_saveDeviceToFirestore');
         Firebase._instance = this;
     }
+
+    saveDeviceWithTokenToServerAsync(pushToken,device,os,osVersion,appVersion,contentVersion){
+        return new Promise((resolve,reject)=>{
+            this._saveDeviceToFirestore({
+                pushToken,
+                device,
+                os,
+                osVersion,
+                appVersion,
+                contentVersion
+            }).then((response)=>{
+                return resolve(response.data);
+            }).catch((response)=>{
+                return reject(response.data);
+            });
+        });
+    }
+
 
     reloadUserData(success,fail){
         this.auth.currentUser.reload().then(()=>{
@@ -246,7 +260,7 @@ export default class Firebase {
     }
 
     checkUserIsAlreadyExist(email,success,fail){
-        return this.auth.signInWithEmailAndPassword(email,TEST_PASSWORD).then(
+        return this.auth.signInWithEmailAndPassword(email,"00").then(
             (response)=>{
                 let errorText = firebaseErrors.signInWithEmailAndPassword.restrictedPassword;
                 Firebase.getInstance().logError(email+" - "+errorText);
@@ -316,7 +330,7 @@ export default class Firebase {
                     title = snapShot.key.split('+')[1];
                 if(!UsersManager.instance.rooms[snapShot.key] || UsersManager.instance.rooms[snapShot.key].archived||UsersManager.instance.rooms[snapShot.key].deleted)
                     return;
-                PushSheet.getInstance().showSheet(title+" - "+message);
+                PushSheet.instance.showSheet(title+" - "+message);
             }
         });
     }

@@ -1,102 +1,28 @@
-import React from 'react';
-import {AppLoading, Asset, Font, Icon, Notifications} from 'expo';
+import * as React from 'react';
 import {View, NetInfo, StatusBar} from 'react-native';
 import {createAppContainer, createStackNavigator, createSwitchNavigator, createBottomTabNavigator} from 'react-navigation';
+import {FontAwesome, Ionicons, Feather} from '@expo/vector-icons';
+import { Text, Button } from 'react-native-elements';
+import WebModalContainer from './components/views/WebModalContainer';
+import ErrorSheet from './components/views/ErrorSheet';
+import SpinnerContainer from './components/views/SpinnerContainer';
+import PushSheet from './components/views/PushSheet';
+
 import {ActivationScreen,CreateEmailScreen,NameScreen, CreatePasswordScreen} from './screens/auth/create';
 import { EmailScreen, PasswordScreen } from './screens/auth/login';
 import {HomeScreen, ProfileScreen, SettingsScreen, EditAboutScreen, ChangeNameScreen, AddFlightScreen, BlockedUsersScreen, AllFlightsScreen, RoomSettingsScreen, VisitorScreen } from './screens/ready';
-import ErrorManager from './core/ErrorManager';
 import LandingScreen from './screens/LandingScreen';
-import Firebase from './core/Firebase';
-import {FontAwesome, Ionicons, Feather} from '@expo/vector-icons';
-import {tabHeaderStyle} from './components/styles/global'
-import SpinnerContainer from './components/views/SpinnerContainer';
 import RoomScreen from './screens/ready/RoomScreen';
 import AdScreen from './screens/ready/AdScreen';
-import PushSheet from './components/views/PushSheet';
-import ErrorSheet from './components/views/ErrorSheet';
-import WebModalContainer from './components/views/WebModalContainer';
 import PlaygroundContainer from './components/views/PlaygroundContainer';
-import { Platform } from 'expo-core';
-import {AppState} from 'react-native';
+import Loader from './Loader';
+import {tabHeaderStyle} from './components/styles/global';
+import {texts} from './constants/language';
+
 
 var playgroundMode = false;
-class App extends React.Component {
-    collectedLoaders=0;
-    startPage = "Landing";
-    constructor(props){
-        super(props);
-        this._handleFinishLoading = this._handleFinishLoading.bind(this);
-    }
 
-    componentDidMount(){
-        if(Platform.OS==="android")
-            Notifications.dismissAllNotificationsAsync();
-        Notifications.setBadgeNumberAsync(0);
-        AppState.addEventListener("change",this._handleStateChange);
-    }
-
-    _handleStateChange(nextAppState){
-        if(nextAppState === 'active') {
-            Notifications.setBadgeNumberAsync(0);
-            if(Platform.OS === "android"){
-                Notifications.dismissAllNotificationsAsync();
-            }
-        }
-    }
-
-    componentWillMount(){
-        Firebase.initializeApp();
-        checkStateChangedAndUnsubscribe = Firebase.getInstance().auth.onAuthStateChanged((user)=>{
-            if(user && user.emailVerified)
-                this.startPage = "Main";
-            checkStateChangedAndUnsubscribe();
-            this.loaderCollected();
-        });
-    }
-
-    loaderCollected(){
-        if(this.collectedLoaders>0)
-        {
-            this.collectedLoaders=0;
-            this.props.navigation.navigate(this.startPage);
-        }
-        this.collectedLoaders++;
-    }
-    render(){
-        return(
-            <AppLoading
-                startAsync={this._loadResourcesAsync}
-                onError={this._handleLoadingError}
-                onFinish={this._handleFinishLoading}
-            />
-        );
-    }
-  
-    _handleLoadingError = error => {
-        ErrorManager.getInstance().logErrors(error);
-    };
-  
-    _handleFinishLoading = () => {
-        this.loaderCollected();
-    };
-  
-    _loadResourcesAsync = async () => {
-        return Promise.all([
-                Asset.loadAsync([
-            ]),
-            Font.loadAsync({
-                ...Icon.Ionicons.font,
-                'nunito': require('./assets/fonts/Nunito-Regular.ttf'),
-                'nunito-light': require('./assets/fonts/Nunito-Light.ttf'),
-                'nunito-lightitalic': require('./assets/fonts/Nunito-LightItalic.ttf'),
-                'nunito-semibold': require('./assets/fonts/Nunito-SemiBold.ttf'),
-                'nunito-black': require('./assets/fonts/Nunito-Black.ttf')
-            }),
-        ]);
-    };
-}
-
+// #region stacks region
 const AuthStack = createStackNavigator(
     {
         Landing: LandingScreen,
@@ -236,68 +162,90 @@ const LoggedNavigator = createStackNavigator({
 
 
 const AppNavigator = createSwitchNavigator({
-        App:App,
+        Loader:Loader,
         Auth: AuthStack,
         Main: LoggedNavigator
     },
     {
-        initialRouteName: 'App',
+        initialRouteName: 'Loader',
     }
 );
 
+// #endregion
+
 const AppContainer = createAppContainer(AppNavigator);
 
-export default class TopView extends React.Component{
-    constructor(props){
+interface Props {
+}
+
+interface State {
+}
+
+export default class TopView extends React.Component<Props, State>{
+    constructor(props:Props){
         super(props);
         this.handleFirstConnectivityChange = this.handleFirstConnectivityChange.bind(this);
+        this.testPressed = this.testPressed.bind(this);
+        this.secondPressed = this.secondPressed.bind(this);
     }
     componentDidMount(){
         if(!playgroundMode){
-            this.showConnectionError();
-            NetInfo.addEventListener('connectionChange', this.handleFirstConnectivityChange);
+            this.checkConnection();
+            NetInfo.addEventListener('connectionChange',this.handleFirstConnectivityChange);
         }
     }
 
-    showConnectionError(){
+    checkConnection(){
         if(!NetInfo.isConnected)
         {
-            ErrorSheet.getInstance().showSheet("İnternet bağlantınla ilgili bir problem varmış gibi görünüyor. Eğer uygulamayla ilgili sorun yaşıyorsan bize web sitemizdeki iletişim formundan ulaş.");
+            var title = texts.errors.connectionError.title;
+            var message = texts.errors.connectionError.message;
+            ErrorSheet.instance.showSheet(title,message);
         }
         else{
-            ErrorSheet.getInstance().hideSheet();
+            ErrorSheet.instance.hideSheet(null);
         }
     }
 
     componentWillUnmount(){
-        NetInfo.removeEventListener('connectionChange', this.handleFirstConnectivityChange);
+        NetInfo.removeEventListener('connectionChange',this.handleFirstConnectivityChange);
     }
 
-    handleFirstConnectivityChange(connectionInfo) {
-        this.showConnectionError();
+    handleFirstConnectivityChange(connectionInfo:any) {
+        this.checkConnection();
+    }
+
+    testPressed(e:any):void{
+        SpinnerContainer.instance.showSpinner(()=>{});
+    }
+
+    secondPressed(e:any){
+        SpinnerContainer.instance.hideSpinner(null);
     }
 
     render(){
         if(playgroundMode){
             return(
                 <PlaygroundContainer style={{flex:1}}>
-
+                    <View style={{flex:1, backgroundColor:'#0000FF', justifyContent:'center',alignItems:'center',position:'absolute', top:0,right:0,left:0,bottom:0}}>
+                        <Text>TestScreen</Text>
+                        <Button onPress={this.testPressed} title="Primary"></Button>
+                        <Button onPress={this.secondPressed} title="Secondary"></Button>
+                    </View>
                 </PlaygroundContainer>
-            )
+            );
         }
-        else
+        else{
             return(
                 <View style={{flex:1}}>
-                    <StatusBar barStyle="dark-content"/> 
                     <AppContainer/>
+                    <WebModalContainer/>
                     <SpinnerContainer/>
                     <ErrorSheet/>
                     <PushSheet/>
-                    <WebModalContainer/>
+                    <StatusBar barStyle="dark-content"/> 
                 </View>
-            )
+            );
+        }
     }
 }
-
-
-//export default appContainer;

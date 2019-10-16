@@ -1,32 +1,40 @@
 import Firebase from "./Firebase";
+import { AppUser } from "../models/AppUser";
 
 export default class UsersManager{
-    static INSTANTIATED = false;
+    static _instance:UsersManager;
     constructor(){
-        
-        if(!UsersManager.INSTANTIATED){
-            this.version=0;
-            UsersManager.INSTANTIATED=true;
+        if(!UsersManager._instance){
+            UsersManager._instance = this;
         }
         else
-            throw new Error("You cannot create instance via constructor.");
+            throw new Error("You cannot create second UsersManager instance!");
     }
-    users={};
+    static get instance(){
+        if(!UsersManager._instance)
+            UsersManager._instance = new UsersManager();
+        return UsersManager._instance;
+    }
+    users:Array<AppUser>=[];
     avatars={};
-    blockedUsers = {};
+    blockedUsers:Array<AppUser> = [];
+    me:AppUser|undefined;
     rooms={};
-    me={
+    
+    /*me={
+        uid:"",
+        displayName:"",
         about:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec laoreet pretium vestibulum. Morbi quis rhoncus mauris. Mauris diam tortor, auctor at sem vitae, interdum commodo turpis. ",
-    };
+    };*/
 
-    checkIfBlocked(key){
+    checkIfBlocked(key:string){
         if(UsersManager.instance.blockedUsers[key])
             return UsersManager.instance.blockedUsers[key];
         else
             return false;
     }
 
-    setMeAfterLoggedIn(key,user){
+    setMeAfterLoggedIn(key:string,user:any){
         UsersManager.instance.me = {
             uid:key,
             displayName:user.displayName,
@@ -34,9 +42,9 @@ export default class UsersManager{
         };
     }
 
-    pushToBlockedList(key,value){
+    pushToBlockedList(key:string,user:any){
         if(!UsersManager.instance.checkIfBlocked(key))
-            UsersManager.instance.blockedUsers[key] = value;
+            UsersManager.instance.blockedUsers[key] = user;
     }
 
     removeFromBlockedList(key){
@@ -127,5 +135,3 @@ export default class UsersManager{
         })
     }
 }
-
-UsersManager.instance = new UsersManager();

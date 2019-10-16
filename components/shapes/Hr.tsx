@@ -1,22 +1,27 @@
 import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, StyleProp, ViewStyle} from 'react-native';
 const color="#DDDDDD";
-export default class Hr extends React.Component{
-    constructor(props){
+
+interface Props{
+    title?:String;
+    style?:StyleProp<ViewStyle>;
+}
+interface State{
+
+}
+export default class Hr extends React.Component<Props, State>{
+    constructor(props:Props){
         super(props);
-        if(this.props.title)
-            this.title=this.props.title;
-        else
-            this.title=":"
 
     }
     render(){
+        let titleText = (this.props.title)?<Text style={styles.point}>{this.props.title}</Text>:<Text style={styles.point}>:</Text>
         return(
-            <View style={styles.container}>
+            <View style={[styles.container,this.props.style]}>
                 <View style={styles.line}>
 
                 </View>
-                <Text style={styles.point}>{this.title}</Text>
+                {titleText}
                 <View style={styles.line}>
 
                 </View>
@@ -35,12 +40,12 @@ const styles = StyleSheet.create({
         borderBottomColor: color,
         borderBottomWidth: 1,
         height:1,
-        margin:16,
         flex:.5
     },
     point:{
         color:color,
         fontSize:16,
-        fontFamily: 'nunito-semibold'
+        fontFamily: 'nunito-semibold',
+        marginHorizontal:8
     }
 })

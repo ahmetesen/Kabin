@@ -1,8 +1,11 @@
 import React from 'react';
 import {View, StyleSheet, Text } from 'react-native';
-import {LinearGradient} from 'expo';
-export default class GradientContainer extends React.Component{
-    constructor(props){
+import { LinearGradient } from 'expo-linear-gradient';
+interface Props{
+
+}
+export default class GradientContainer extends React.Component<Props>{
+    constructor(props:Props){
         super(props);
     }
 
@@ -16,6 +19,8 @@ export default class GradientContainer extends React.Component{
 }
 const styles = StyleSheet.create({
     linearGradient:{
-        flex:1
+        flex:1,
+        paddingHorizontal:16,
+        paddingBottom:28,
     }
 })

@@ -9,7 +9,6 @@ import SpinnerContainer from '../../components/views/SpinnerContainer';
 import Dialog, {DialogContent, DialogTitle,DialogFooter,DialogButton} from 'react-native-popup-dialog';
 import Firebase from '../../core/Firebase';
 
-
 export default class RoomListView extends React.Component{
 
     _initialState={

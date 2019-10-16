@@ -1,12 +1,29 @@
 import React from 'react';
-import {StyleSheet, Text} from 'react-native';
-export default class TextBlock extends React.Component{
-    constructor(props){
+import {StyleSheet, Text, StyleProp, TextStyle} from 'react-native';
+
+interface Props{
+    logo?:boolean;
+    big?:boolean;
+    dark?:boolean;
+    style?:StyleProp<TextStyle>;
+    numberOfLines?: number | undefined;
+    blue?:boolean;
+    bold?:boolean;
+    low?:boolean;
+    italic?:boolean;
+    small?:boolean;
+    black?:boolean;
+}
+
+export default class TextBlock extends React.Component<Props>{
+    constructor(props:Props){
         super(props);
     }
 
     render(){
-        style=[styles.text];
+        let style=[];
+        style.push(styles.text);
+        
         if(this.props.logo)
             style.push(styles.logo);
         if(this.props.big)

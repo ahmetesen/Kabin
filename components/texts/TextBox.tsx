@@ -1,14 +1,20 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import {Input} from 'react-native-elements';
-export default class TextBox extends React.Component{
+import { StyleSheet, StyleProp, TextStyle } from 'react-native';
+import {Input, InputProps} from 'react-native-elements';
+interface Props extends InputProps{
+    style?:StyleProp<TextStyle>;
+    dark?:boolean;
 
-    constructor(props){
+}
+export default class TextBox extends React.Component<Props>{
+    textInput:Input|null = null;
+    constructor(props:Props){
         super(props);
     }
 
     focus(){
-        this.textInput.focus();
+        if(this.textInput)
+            this.textInput.focus();
     }
     
     render(){
@@ -21,7 +27,7 @@ export default class TextBox extends React.Component{
                 inputContainerStyle={styles.inputContainerStyle}
                 placeholder=''
                 shake={true}
-                errorStyle={styles.errorStyle}
+                errorStyle={this.props.dark?styles.errorDarkStyle:styles.errorStyle}
                 inputStyle={this.props.dark?styles.inputDarkStyle:styles.inputStyle}
                 placeholderTextColor={this.props.dark?styles.placeHolderDarkStyle.color:styles.placeHolderStyle.color}
                 {...this.props}
@@ -39,7 +45,7 @@ const styles = StyleSheet.create({
         width:'100%',
     },    
     inputContainerStyle:{
-        borderBottomColor:'transparent',
+        borderBottomColor:'white',
         margin:0,
         padding:0
     },
@@ -63,11 +69,9 @@ const styles = StyleSheet.create({
     errorStyle:{
         color:'#FFA7AE',
         fontSize:16
+    },
+    errorDarkStyle:{
+        color:'#FF3545',
+        fontSize:16
     }
 });
-
-const initialState = {
-    placeholderValue:'',
-    inputValue:'',
-    errorValue:'',   
-}

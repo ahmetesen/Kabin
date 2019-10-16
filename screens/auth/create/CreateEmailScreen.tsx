@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, KeyboardAvoidingView } from 'react-native';
+import { View, KeyboardAvoidingView, GestureResponderEvent } from 'react-native';
 import TextBlock from '../../../components/texts/TextBlock';
 import GradientContainer from '../../../components/views/GradientContainer';
 import SpinnerContainer from '../../../components/views/SpinnerContainer';
@@ -9,18 +9,27 @@ import SecondaryButton from '../../../components/buttons/SecondaryButton';
 import PrimaryButton from '../../../components/buttons/PrimaryButton';
 import {styles} from './style';
 import Firebase from '../../../core/Firebase';
-import { StackActions, NavigationActions } from 'react-navigation';
 import { LinkButton } from '../../../components/buttons';
 import WebModalContainer from '../../../components/views/WebModalContainer';
-export default class CreateEmailScreen extends React.Component{
-    _initialState={
-        name:'',
-        email:'',
-        errorMessage:''
-    };
-    constructor(props){
+import { NavigationScreenProp, NavigationState, NavigationParams } from 'react-navigation';
+import { texts } from '../../../constants/language';
+interface Props{
+    navigation: NavigationScreenProp<NavigationState, NavigationParams>;
+}
+interface State{
+    name:string;
+    email:string;
+    errorMessage:string;
+}
+export default class CreateEmailScreen extends React.Component<Props,State>{
+    spinnerCancelled = false;
+    constructor(props:Props){
         super(props);
-        this.state = this._initialState;
+        this.state = {
+            name:'',
+            email:'',
+            errorMessage:''
+        };
         this._onMailTextChange = this._onMailTextChange.bind(this);
         this._onSubmit = this._onSubmit.bind(this);
         this._primaryPress = this._primaryPress.bind(this);
@@ -28,12 +37,11 @@ export default class CreateEmailScreen extends React.Component{
         this._eulaClick = this._eulaClick.bind(this);
     }
     componentWillMount(){
-        name = this.props.navigation.getParam('name','Misafir');
+        let name = this.props.navigation.getParam('name',texts.createEmailScreen.defaultName);
         this.setState({name:name});
     }
-    _onMailTextChange(value){
+    _onMailTextChange(value:string){
         this.setState({email:value,errorMessage:""});
-
     }
     _validateEmail(){
         var email = this.state.email;
@@ -46,31 +54,35 @@ export default class CreateEmailScreen extends React.Component{
                 return true;
             }
             else
-                errorMessage="Geçerli bir şirket eposta adresi girmen gerekir.";
+                errorMessage=texts.createEmailScreen.firmMailError;
         }
         else
-            errorMessage="Geçerli bir eposta adresi girmen gerekir.";
+            errorMessage=texts.createEmailScreen.mailError;
         this.setState({errorMessage:errorMessage});
         return false;
     }
-    
     _checkIsUserLoggedAlready(){
-        SpinnerContainer.getInstance().showSpinner();
+        SpinnerContainer.instance.showSpinner(()=>{
+            this.spinnerCancelled = true;
+        });
         Firebase.getInstance().checkUserIsAlreadyExist(this.state.email,
             ()=>{
+                if(this.spinnerCancelled)
+                    return;
                 this._checkEmailIsValid().then(()=>{
-                    SpinnerContainer.getInstance().hideSpinner(()=>{
+                    SpinnerContainer.instance.hideSpinner(()=>{
                         this.props.navigation.navigate("CreatePassword",{name:this.state.name,email:this.state.email});
                     });
                 }).catch((error)=>{
-                    SpinnerContainer.getInstance().hideSpinner(()=>{
+                    if(this.spinnerCancelled)
+                        return;
+                    SpinnerContainer.instance.hideSpinner(()=>{
                         this.setState({errorMessage:error});
                     });
                 });
-                
             },
             (response)=>{
-                SpinnerContainer.getInstance().hideSpinner(()=>{
+                SpinnerContainer.instance.hideSpinner(()=>{
                     this.setState({errorMessage:response});
                 });
                 
@@ -90,20 +102,20 @@ export default class CreateEmailScreen extends React.Component{
                 else if(response.data && response.data.statusCode && response.data.statusCode === 400)
                     return reject(response.data.error)
                 else
-                    return reject("Bir hata oluştu :( Eposta adresinde bir hata olabilir mi?")
+                    return reject("")
             }).catch((error)=>{
                 return reject(error.error);
             });
         });
     }
 
-    _onSubmit(e){
+    _onSubmit(e:any){
         this._createEmailComplete();
     }
 
     _createEmailComplete(){
         if(this.state.email ==""){
-            this.setState({errorMessage:"Bir epostan olmalı?"});
+            this.setState({errorMessage:texts.createEmailScreen.emptyMailError});
             return;
         }
         else if(this._validateEmail()){
@@ -112,17 +124,19 @@ export default class CreateEmailScreen extends React.Component{
         }
     }
 
-    _primaryPress(event){
+    _primaryPress(event:GestureResponderEvent){
         this._createEmailComplete();
     }
 
-    _secondaryPress(event){
+    _secondaryPress(event:GestureResponderEvent){
         this.props.navigation.navigate('Email');
     }
 
-    _eulaClick(event){
-        WebModalContainer.getInstance().openModal('https://kabinapp.firebaseapp.com/gizlilik.html');
-        SpinnerContainer.getInstance().showSpinner();
+    _eulaClick(event:GestureResponderEvent){
+        WebModalContainer.instance.openModal(texts.createEmailScreen.privacyLink);
+        SpinnerContainer.instance.showSpinner(()=>{
+            WebModalContainer.instance.closeModal();
+        });
     }
 
     render(){
@@ -130,35 +144,37 @@ export default class CreateEmailScreen extends React.Component{
             <GradientContainer>
                 <View style={styles.container}>
                     <View style={styles.logoContainer}>
-                        <TextBlock logo>Kabin</TextBlock>
+                        <TextBlock logo>{texts.logo}</TextBlock>
                     </View>
-                    <KeyboardAvoidingView behavior='padding' style={styles.keyboardAvoidingViewStyle}>
-                        <View style={styles.titleContainer}>
-                            <TextBlock big>Hoş geldin {this.state.name},</TextBlock>
-                        </View>
-                        <View style={styles.textBoxContainer}>
-                            <TextBox
-                                onChangeText={this._onMailTextChange}
-                                onSubmitEditing={this._onSubmit}
-                                value={this.state.email}
-                                errorMessage={this.state.errorMessage}
-                                returnKeyType="next"
-                                autoFocus={true}
-                                shake={true}
-                                placeholder='Şirket e-posta adresin nedir?'
-                            />
-                        </View>
-                        <View>
-                            <LinkButton title="Devam ederek, kullanıcı sözleşmesini kabul etmiş sayılırsınız." onPress={this._eulaClick}></LinkButton>
+                    <View style={styles.titleContainer}>
+                        <TextBlock big bold>
+                            {this.state.name} {texts.createEmailScreen.welcome}
+                        </TextBlock>
+                    </View>
+                    <View style={styles.textBoxContainer}>
+                        <TextBox
+                            onChangeText={this._onMailTextChange}
+                            onSubmitEditing={this._onSubmit}
+                            value={this.state.email}
+                            errorMessage={this.state.errorMessage}
+                            returnKeyType="next"
+                            autoFocus={true}
+                            shake={true}
+                            placeholder={texts.createEmailScreen.inputPlaceholder}
+                        />
+                    </View>
+                    <KeyboardAvoidingView behavior='padding' style={{
+                        flex:1,
+                        alignItems:'stretch',
+                        justifyContent:'flex-end'
+                    }}>
+                        <LinkButton title={texts.createEmailScreen.privacyLinkText} onPress={this._eulaClick}></LinkButton>
+                        <View style={{paddingVertical:16}}>
+                            <PrimaryButton title={texts.createEmailScreen.buttons.primary} onPress={this._primaryPress}/>
                         </View>
                     </KeyboardAvoidingView>
-                    <View style={styles.infoContainer}>
-                        <PrimaryButton title=" Devam " onPress={this._primaryPress}/>
-                    </View>
-                    <View style={styles.footerContainer}>
-                        <Hr title="Zaten üye misin?"></Hr>
-                        <SecondaryButton title="Giriş Yap" onPress={this._secondaryPress}></SecondaryButton>
-                    </View>
+                    <Hr title={texts.createEmailScreen.seperator}></Hr>
+                    <SecondaryButton title={texts.createEmailScreen.buttons.secondary} onPress={this._secondaryPress}></SecondaryButton>
                 </View>
             </GradientContainer>
         );

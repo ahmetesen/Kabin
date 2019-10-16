@@ -1,7 +1,17 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-const color="#DDDDDD";
-export default class SoftLine extends React.Component{
+
+interface Props{
+    topSpace?:number;
+}
+interface State{
+
+}
+export default class SoftLine extends React.Component<Props,State>{
+    constructor(props:Props){
+        super(props);
+    }
+
     render(){
         let topSpace=0;
         if(this.props.topSpace)

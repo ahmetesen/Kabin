@@ -1,22 +1,27 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import { StyleSheet, View, Dimensions} from 'react-native';
 import TextBlock from '../texts/TextBlock';
-export default class CarouselContainer extends React.Component{
-    
-    constructor(props){
+interface Props{
+    entries:Array<{title:string,description:string,icon:ReactNode}>;
+}
+interface State{
+    activeSlide:number;
+}
+export default class CarouselContainer extends React.Component<Props,State>{
+    constructor(props:Props){
         super(props);
         this.state = {activeSlide:0}
     }
-    _renderItem(item,index){
+    _renderItem(obj:any):ReactNode{
         return(
             <View style={styles.container}>
-                <TextBlock big>
-                    {item.item.title}
+                <TextBlock big bold>
+                    {obj.item.title}
                 </TextBlock>
-                {item.item.icon}
-                <TextBlock italic>
-                    {item.item.description}
+                {obj.item.icon}
+                <TextBlock>
+                    {obj.item.description}
                 </TextBlock>
             </View>
         );
@@ -31,11 +36,11 @@ export default class CarouselContainer extends React.Component{
               activeDotIndex={activeSlide}
               containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.0)' }}
               dotStyle={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: 4,
-                  marginHorizontal: 2,
-                  backgroundColor: '#283AD8'
+                  width: 6,
+                  height: 6,
+                  borderRadius: 2,
+                  marginHorizontal: 0,
+                  backgroundColor: '#FFFFFF'
               }}
               inactiveDotStyle={{
                   // Define styles for inactive dots here
@@ -45,12 +50,12 @@ export default class CarouselContainer extends React.Component{
             />
         );
     }
-
+    _carousel:any;
     render(){
         return(
             <View>
                 <Carousel
-                ref={(c) => { this._carousel = c; }}
+                ref={(c:any) => { this._carousel = c; }}
                 data={this.props.entries}
                 onSnapToItem={(index) => this.setState({ activeSlide: index }) }
                 renderItem={this._renderItem}

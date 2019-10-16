@@ -6,25 +6,25 @@ export const styles = StyleSheet.create({
         alignItems:'stretch'
     },
     logoContainer:{
-        height:100,
+        height:96,
         justifyContent:'flex-end',
         alignItems:'center'
     },
     keyboardAvoidingViewStyle:{
-        padding:16,
         flex:1,
-        justifyContent:'space-around',
-        alignItems:'stretch'
+        alignItems:'stretch',
+        justifyContent:'flex-end'
     },
     footerContainer: {
-        height: 160,
+        height:160,
         justifyContent:'flex-start',
-        alignItems:'stretch'
+        padding:20
     },
     titleContainer:{
-
-        alignItems:'center',
-        justifyContent:'center',
+        alignItems:'flex-start',
+        justifyContent:'flex-start',
+        marginTop:20,
+        marginHorizontal:20
     },
     infoContainer:{
         flex:.3,
@@ -33,8 +33,9 @@ export const styles = StyleSheet.create({
         paddingBottom:16
     },
     textBoxContainer:{
-        padding:8,
+        padding:12,
+        paddingTop:20,
         flex:.4,
-        justifyContent:'center',
+        justifyContent:'flex-start',
     }
 });
