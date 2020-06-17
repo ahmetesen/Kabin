@@ -1,8 +1,9 @@
 import React from 'react';
-import {StyleSheet, View, TouchableWithoutFeedback} from 'react-native';
+import {ScrollView, StyleSheet, View, TouchableWithoutFeedback} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import SoftLine from '../shapes/soft-line';
 import TextBlock from '../texts/text-block';
-export default class FlightItem extends React.Component{
+export default class ListItem extends React.Component{
     constructor(props){
         super(props);
         this._iconPress = this._iconPress.bind(this);
@@ -16,33 +17,25 @@ export default class FlightItem extends React.Component{
 
     _namePress(event){
         if(this.props.namePress)
-            this.props.namePress(this.props.id);
+            this.props.namePress(this.props.id,this.props.displayName);
     }
 
     render(){
         return (
             <View id={this.props.id?this.props.id:""} onPress={this.unblockPress} style={{alignItems:'stretch', flex:1}}>
                 <View style={styles.itemContainer}>
-                    <View>
+                    <View style={{flex:0.9}}>
                         <TouchableWithoutFeedback onPress={this._namePress}>
-                            <View>
-                                <TextBlock dark bold>
-                                    {this.props.displayName?this.props.displayName:""}
-                                </TextBlock>
-                                <TextBlock dark low>
-                                    Uçuş Tarihi: {this.props.formattedDate}
-                                </TextBlock>
-                            </View>
-                            
+                            <TextBlock dark bold>
+                                {this.props.displayName?this.props.displayName:""}
+                            </TextBlock>
                         </TouchableWithoutFeedback>
                     </View>
-                    {this.props.archived?
-                        <View style={styles.arrowView} >
-                            <TouchableWithoutFeedback onPress={this._iconPress}>
-                                <TextBlock dark>Geri Al</TextBlock>
-                            </TouchableWithoutFeedback>
-                        </View>:
-                        <View></View>}
+                    <View style={styles.arrowView} >
+                        <TouchableWithoutFeedback onPress={this._iconPress}>
+                            {this.props.icon?this.props.icon:(<Ionicons name="ios-close" size={48} color='#878787' />)}
+                        </TouchableWithoutFeedback>
+                    </View>
                 </View>
                 <SoftLine topSpace={12} />
             </View>
@@ -56,7 +49,6 @@ const styles = StyleSheet.create({
         paddingBottom:24
     },
     itemContainer:{
-        justifyContent:'space-between',
         alignItems:'center',
         flexDirection: 'row',
         flex:1,
@@ -64,6 +56,7 @@ const styles = StyleSheet.create({
         paddingHorizontal:24,
     },
     arrowView:{
+        flex:.1,
         justifyContent:'center',
         alignItems:'flex-end',
         minHeight:40

@@ -139,6 +139,7 @@ export default class Firebase {
         this.setNewDisplayName = this.funcs.httpsCallable('setNewDisplayName');
         this.getProfileDetailsForGuest = this.funcs.httpsCallable('getProfileDetailsForGuest');
         this._saveDeviceToFirestore = this.funcs.httpsCallable('a_saveDeviceToFirestore');
+        this._
         Firebase._instance = this;
     }
 

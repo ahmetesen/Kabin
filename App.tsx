@@ -1,251 +1,142 @@
-import * as React from 'react';
-import {View, NetInfo, StatusBar} from 'react-native';
-import {createAppContainer, createStackNavigator, createSwitchNavigator, createBottomTabNavigator} from 'react-navigation';
-import {FontAwesome, Ionicons, Feather} from '@expo/vector-icons';
-import { Text, Button } from 'react-native-elements';
-import WebModalContainer from './components/views/WebModalContainer';
-import ErrorSheet from './components/views/ErrorSheet';
-import SpinnerContainer from './components/views/SpinnerContainer';
-import PushSheet from './components/views/PushSheet';
+import React, { Component } from 'react';
+import {View, Text} from 'react-native';
+import ConnectionManager from './core/connection-manager';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { RootStackParamList } from './constants/nav-params';
+import AppLoad from './app-load';
+import PreLanding from './screens/prelanding';
+import Landing from './screens/landing';
+import Name from './screens/auth/create/name'
+import Home from './screens/ready/home';
+import SpinnerContainer from './components/views/spinner-container';
+import {Provider, connect} from 'react-redux';
+import {store} from './store/store';
+import CreateEmail from './screens/auth/create/create-email';
+import WebModalContainer from './components/views/web-modal-container';
+import Email from './screens/auth/login/email';
+import CreatePassword from './screens/auth/create/create-password';
+import Password from './screens/auth/login/password';
+import Verification from './screens/auth/verification';
+import Profile from './screens/ready/profile';
+import Settings from './screens/ready/settings';
+import Visitor from './screens/ready/visitor';
+import TextBlock from './components/texts/text-block';
+import { i18n } from './constants/language';
+import { primaryColor } from './components/styles/global';
 
-import {ActivationScreen,CreateEmailScreen,NameScreen, CreatePasswordScreen} from './screens/auth/create';
-import { EmailScreen, PasswordScreen } from './screens/auth/login';
-import {HomeScreen, ProfileScreen, SettingsScreen, EditAboutScreen, ChangeNameScreen, AddFlightScreen, BlockedUsersScreen, AllFlightsScreen, RoomSettingsScreen, VisitorScreen } from './screens/ready';
-import LandingScreen from './screens/LandingScreen';
-import RoomScreen from './screens/ready/RoomScreen';
-import AdScreen from './screens/ready/AdScreen';
-import PlaygroundContainer from './components/views/PlaygroundContainer';
-import Loader from './Loader';
-import {tabHeaderStyle} from './components/styles/global';
-import {texts} from './constants/language';
-
-
-var playgroundMode = false;
-
-// #region stacks region
-const AuthStack = createStackNavigator(
-    {
-        Landing: LandingScreen,
-        Name: NameScreen, 
-        CreateEmail:CreateEmailScreen, 
-        CreatePassword:CreatePasswordScreen, 
-        Activation: ActivationScreen,
-        Email: EmailScreen,
-        Password: PasswordScreen
-    },
-    {
-        headerMode:'none'
-    }
-);
-
-const ProfileStack = createStackNavigator(
-    {
-        profilePage:ProfileScreen
-    },
-    {        
-        defaultNavigationOptions:{
-            headerTitle:'Ben',
-            headerTitleStyle:{
-                ...tabHeaderStyle,
-            }
-            
-        },
-        navigationOptions:{
-            tabBarIcon: ({ tintColor }) => (
-                <FontAwesome name="user-o" size={32} color={tintColor} />
-            )
-        }
-    }
-);
-
-const HomeStack = createStackNavigator(
-    {
-        homePage:HomeScreen
-    },
-    {        
-        defaultNavigationOptions:{
-            headerTitle:'Kabin',
-            headerTitleStyle:{
-                ...tabHeaderStyle,
-                fontSize:36,
-                fontFamily:'nunito-black'
-            }
-
-        },
-        navigationOptions:{
-            tabBarIcon: ({ tintColor }) => (
-                <Ionicons name="ios-chatbubbles" size={32} color={tintColor} />
-            ),
-        }
-    }
-);
-
-const SettingsStack = createStackNavigator(
-    {
-        settingsPage:SettingsScreen
-    },
-    {
-        defaultNavigationOptions:{
-            headerTitle:'Ayarlar',
-            headerTitleStyle:tabHeaderStyle
-        },
-        navigationOptions:{
-            tabBarIcon: ({ tintColor }) => (
-                <Feather name="settings" size={32} color={tintColor} />
-            ),
-        }
-    }
-);
-
-const LoggedTab = createBottomTabNavigator(
-    {
-        Profile: {
-            screen:ProfileStack,
-        },
-        Home: {
-            screen:HomeStack,
-        },
-        Settings: {
-            screen:SettingsStack
-        }
-    },
-    {
-        initialRouteName: 'Home',
-        tabBarOptions:{
-            showLabel:false,
-            activeTintColor:"#283AD8",
-        }
-    },
-);
-
-const LoggedNavigator = createStackNavigator({
-    Logged:{
-        screen:LoggedTab,
-        navigationOptions:{
-            header:null
-        }
-    },
-    AddFlight:{
-        screen:AddFlightScreen
-    },
-    Room:{
-        screen:RoomScreen
-    },
-    RoomSettings:{
-        screen:RoomSettingsScreen
-    },
-    Visitor:{
-        screen:VisitorScreen
-    },
-    Ad:{
-        screen:AdScreen
-    },
-    EditAbout:{
-        screen:EditAboutScreen
-    },
-    ChangeName:{
-        screen:ChangeNameScreen
-    },
-    BlockedUsers:{
-        screen:BlockedUsersScreen
-    },
-    AllFlights:{
-        screen:AllFlightsScreen
-    }
-},{
-    initialRouteName: 'Logged',
-    defaultNavigationOptions:{
-        headerBackTitle:null,
-        headerTintColor:'#283AD8',
-    }
-});
-
-
-const AppNavigator = createSwitchNavigator({
-        Loader:Loader,
-        Auth: AuthStack,
-        Main: LoggedNavigator
-    },
-    {
-        initialRouteName: 'Loader',
-    }
-);
-
-// #endregion
-
-const AppContainer = createAppContainer(AppNavigator);
-
-interface Props {
+type Props = {
+    loggedIn:'INITIAL' | 'ANONYM' | 'REGISTERED' | 'VERIFIED';
 }
 
-interface State {
+type State = {
+    loggedIn:Boolean
 }
 
-export default class TopView extends React.Component<Props, State>{
-    constructor(props:Props){
-        super(props);
-        this.handleFirstConnectivityChange = this.handleFirstConnectivityChange.bind(this);
-        this.testPressed = this.testPressed.bind(this);
-        this.secondPressed = this.secondPressed.bind(this);
-    }
+const Stack = createStackNavigator<RootStackParamList>();
+
+class TopViewComponent extends Component<Props, State>{
+    _playgroundMode = false;
+
     componentDidMount(){
-        if(!playgroundMode){
-            this.checkConnection();
-            NetInfo.addEventListener('connectionChange',this.handleFirstConnectivityChange);
-        }
+        this.initializeConnection();
     }
-
-    checkConnection(){
-        if(!NetInfo.isConnected)
-        {
-            var title = texts.errors.connectionError.title;
-            var message = texts.errors.connectionError.message;
-            ErrorSheet.instance.showSheet(title,message);
-        }
-        else{
-            ErrorSheet.instance.hideSheet(null);
-        }
-    }
-
-    componentWillUnmount(){
-        NetInfo.removeEventListener('connectionChange',this.handleFirstConnectivityChange);
-    }
-
-    handleFirstConnectivityChange(connectionInfo:any) {
-        this.checkConnection();
-    }
-
-    testPressed(e:any):void{
-        SpinnerContainer.instance.showSpinner(()=>{});
-    }
-
-    secondPressed(e:any){
-        SpinnerContainer.instance.hideSpinner(null);
+    initializeConnection() {
+        ConnectionManager.instance.startListening();
     }
 
     render(){
-        if(playgroundMode){
+        if(this._playgroundMode){
             return(
-                <PlaygroundContainer style={{flex:1}}>
-                    <View style={{flex:1, backgroundColor:'#0000FF', justifyContent:'center',alignItems:'center',position:'absolute', top:0,right:0,left:0,bottom:0}}>
+                    <View style={{flex:1, backgroundColor:'#4444FF', justifyContent:'center',alignItems:'center',position:'absolute', top:0,right:0,left:0,bottom:0}}>
                         <Text>TestScreen</Text>
-                        <Button onPress={this.testPressed} title="Primary"></Button>
-                        <Button onPress={this.secondPressed} title="Secondary"></Button>
                     </View>
-                </PlaygroundContainer>
             );
         }
         else{
-            return(
-                <View style={{flex:1}}>
-                    <AppContainer/>
-                    <WebModalContainer/>
-                    <SpinnerContainer/>
-                    <ErrorSheet/>
-                    <PushSheet/>
-                    <StatusBar barStyle="dark-content"/> 
+            let screens = (
+                <>
+                    <Stack.Screen name="AppLoad" component={AppLoad} options={{animationEnabled:false}}/>
+                    <Stack.Screen name="PreLanding" component={PreLanding} options={{animationEnabled:false}}/>
+                </>
+            );
+            let initialRouteName = "AppLoad";
+            const logoHeader=()=>(
+                <View style={{justifyContent:"center", alignItems:'center', marginTop:44}}>
+                    <TextBlock logoInverse>{i18n.t('logo')}</TextBlock>
                 </View>
+            )
+            switch(this.props.loggedIn){
+                case "ANONYM":
+                    screens = (
+                        <NavigationContainer>
+                            <Stack.Navigator headerMode='none' initialRouteName="Landing">
+                                <Stack.Screen name="Landing" component={Landing} options={{animationEnabled:false}}/>
+                                <Stack.Screen name="Name" component={Name} options={{animationEnabled:true}}/>
+                                <Stack.Screen name="CreateEmail" component={CreateEmail} initialParams={{name:''}} options={{animationEnabled:true}}/>
+                                <Stack.Screen name="CreatePassword" component={CreatePassword} initialParams={{name:'',email:''}} options={{animationEnabled:true}}/>
+                                <Stack.Screen name="Email" component={Email} options={{animationEnabled:true}}/>
+                                <Stack.Screen name="Password" component={Password} initialParams={{email:''}} options={{animationEnabled:true}}/>
+                            </Stack.Navigator>
+                        </NavigationContainer>
+                    );
+                break;
+                case "REGISTERED":
+                    screens = (
+                        <NavigationContainer>
+                            <Stack.Navigator headerMode='none' initialRouteName="Verification">
+                                <Stack.Screen name="Verification" component={Verification} options={{animationEnabled:true}}/>
+                            </Stack.Navigator>
+                        </NavigationContainer>
+                    );
+                break;
+                case "VERIFIED":
+                    screens = (
+                        <NavigationContainer>
+                            <Stack.Navigator initialRouteName='Home'>
+                                <Stack.Screen name="Home" component={Home} options={{animationEnabled:false, headerLeft:undefined, headerTitle:'Kabin', headerTitleStyle:{fontFamily:'nunito-black', color:primaryColor, fontSize:28}}} />
+                                <Stack.Screen name="Profile" component={Profile} options={{animationEnabled:false, headerBackTitleVisible:false, headerTitle:'Profile', headerTitleStyle:{fontFamily:'nunito-semibold', color:primaryColor}}} />
+                                <Stack.Screen name="Settings" component={Settings} options={{animationEnabled:false, headerBackTitleVisible:false, headerTitle:'Settings', headerTitleStyle:{fontFamily:'nunito-semibold', color:primaryColor}}} />
+                                <Stack.Screen name="Visitor" component={Visitor} />
+                            </Stack.Navigator>
+                            
+                        </NavigationContainer>
+                    );
+                break;
+                case "INITIAL":
+                    initialRouteName = "AppLoad";
+                    screens = (
+                        <NavigationContainer>
+                            <Stack.Navigator headerMode='none' initialRouteName="AppLoad">
+                                <Stack.Screen name="AppLoad" component={AppLoad} options={{animationEnabled:false}}/>
+                                <Stack.Screen name="PreLanding" component={PreLanding} options={{animationEnabled:false}}/>
+                            </Stack.Navigator>
+                        </NavigationContainer>
+                    );
+                break;
+            }
+            return( 
+                    <View style={{flex:1}}>
+                                {screens}
+                        <WebModalContainer></WebModalContainer>
+                        <SpinnerContainer></SpinnerContainer>
+                    </View>
             );
         }
     }
 }
+
+const mapStateToProps = (state: any, ownProps:any)=>{
+    return { loggedIn:  state.login.loggedIn};
+};
+
+const TopView = connect(mapStateToProps,null)(TopViewComponent);
+
+const App = ()=>(
+    <Provider store={store}>
+        <TopView></TopView>
+    </Provider>
+
+);
+export default App;

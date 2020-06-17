@@ -1,4 +1,4 @@
-import FirebaseCore from "./FirebaseCore";
+import FirebaseCore from "./firebase-core";
 
 export default class Storage{
     static _instance:Storage;

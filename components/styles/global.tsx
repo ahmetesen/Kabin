@@ -1,7 +1,8 @@
+const primaryColor = '#283ad8';
 const tabHeaderStyle={
-    color:'#283AD8',
+    color:primaryColor,
     fontFamily:'nunito-bold',
     fontSize:22
 }
 
-export {tabHeaderStyle}
+export {tabHeaderStyle, primaryColor}

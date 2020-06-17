@@ -1,13 +1,13 @@
 import React from 'react';
 import {View, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import TextBlock from '../texts/TextBlock';
-import {msToDate} from '../../helpers/DateHelper';
-import SoftLine from '../shapes/SoftLine';
+import TextBlock from '../texts/text-block';
+import {msToDate} from '../../helpers/date-helper';
+import SoftLine from '../shapes/soft-line';
 import Swipeout from 'react-native-swipeout';
-import SpinnerContainer from '../../components/views/SpinnerContainer';
+import SpinnerContainer from './spinner-container';
 import Dialog, {DialogContent, DialogTitle,DialogFooter,DialogButton} from 'react-native-popup-dialog';
-import Firebase from '../../core/Firebase';
+import Firebase from '../../core/firebase';
 
 export default class RoomListView extends React.Component{
 

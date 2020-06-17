@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {View, StyleSheet, Text, StyleProp, ViewStyle} from 'react-native';
 const color="#DDDDDD";
 
@@ -9,7 +9,7 @@ interface Props{
 interface State{
 
 }
-export default class Hr extends React.Component<Props, State>{
+export default class Hr extends Component<Props, State>{
     constructor(props:Props){
         super(props);
 
